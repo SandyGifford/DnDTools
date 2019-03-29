@@ -1,0 +1,33 @@
+{
+	"compilerOptions": {
+		"target": "es6",
+		"noUnusedLocals": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noImplicitAny": true,
+		"esModuleInterop": true,
+		"alwaysStrict": true,
+		"jsx": "react",
+		"baseUrl": "./",
+		"paths": {
+			"@typings/*": [
+				"./src/shared/typing/*"
+			],
+			"@utils/*": [
+				"./src/shared/utils/*"
+			],
+			"@shared/*": [
+				"./src/shared/*"
+			],
+			"@components/*": [
+				"./src/client/components/*"
+			],
+			"@client/*": [
+				"./src/client/*"
+			],
+			"@server/*": [
+				"./src/server/*"
+			]
+		}
+	}
+}
