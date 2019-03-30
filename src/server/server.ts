@@ -1,10 +1,13 @@
-console.clear();
-
 import express from "express";
 import { Server } from "http";
 
 import SocketStuff from "./socketStuff";
 import routing from "./routing";
+import DnD5eEndpoints from "./DnD5eEndpoints";
+
+
+DnD5eEndpoints.abilityScores()
+	.then(r => console.log(r.results[0].url));
 
 const app = express();
 const server: Server = require("http").Server(app);
