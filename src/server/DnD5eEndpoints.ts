@@ -27,7 +27,9 @@ import {
 	EquipmentName,
 	ConditionName,
 	DamageTypeName,
-	MagicSchoolName
+	MagicSchoolName,
+	TraitName,
+	Trait
 } from "@typings/DnD5e";
 import { Condition } from "webpack";
 
@@ -102,6 +104,13 @@ export default class DnD5eEndpoints {
 	public static subRaces(race: RaceName): Promise<SubRace>;
 	public static subRaces(indexer?: any): Promise<any> {
 		return fetch(`http://www.dnd5eapi.co/api/subraces/${typeof indexer !== "undefined" ? indexer : ""}`)
+			.then(r => r.json());
+	}
+
+	public static traits(): Promise<NamedAPIResourceList<TraitName>>;
+	public static traits(index: number): Promise<Trait>;
+	public static traits(index?: number): Promise<any> {
+		return fetch(`http://www.dnd5eapi.co/api/traits/${typeof index !== "undefined" ? index : ""}`)
 			.then(r => r.json());
 	}
 
