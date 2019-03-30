@@ -29,9 +29,9 @@ import {
 	DamageTypeName,
 	MagicSchoolName,
 	TraitName,
-	Trait
+	Trait,
+	Condition
 } from "@typings/DnD5e";
-import { Condition } from "webpack";
 
 export default class DnD5eEndpoints {
 	public static abilityScores(): Promise<NamedAPIResourceList<AbilityScoreName>>;
