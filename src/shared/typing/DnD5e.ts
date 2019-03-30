@@ -4,17 +4,41 @@ export type ClassName = string;
 export type SubClassName = string;
 export type RaceName = string;
 export type Level = number; // level 1-20
+export type AbilityScoreName = string;
+export type SkillName = string;
+export type ProficiencyName = string;
+export type LanguageName = string;
+export type FeatureName = string;
+export type SubRaceName = string;
+export type EquipmentName = string;
+export type ConditionName = string;
+export type DamageTypeName = string;
+export type MagicSchoolName = string;
+export type FetureName = string;
+export type TraitName = string;
+
+export type ProficiencyType = string;
+export type LanguageType = string;
+export type EquipmentType = string;
+export type EquipmentSubType = string;
+
+export type EquipmentProperty = string;
+export type LanguageScript = string;
+export type WeaponCategory = string;
 export type Size = string; // Medium
 export type WeaponRange = "Melee" | "Ranged";
 export type DieSides = 4 | 6 | 8 | 10 | 12 | 20;
-
 export type CoinType = "gp" | "sp" | "cp";
 
-export type APIResource = NamedAPIResource | ClassAPIResource;
+export type APIResource = NamedAPIResource<string> | ClassAPIResource;
 
-export interface NamedAPIResource<NAME extends string = string> {
+export interface NamedAPIResource<NAME extends string> {
 	name: NAME;
 	url: string;
+}
+
+export interface NamedResource<NAME extends string> {
+	name: NAME;
 }
 
 export interface ClassAPIResource {
@@ -22,10 +46,10 @@ export interface ClassAPIResource {
 	url: string;
 }
 
-export interface Choice {
+export interface Choice<RESOURCE extends APIResource> {
 	choose: number;
 	type: string; // TODO: can this be narrowed?
-	from: APIResource[]; // TODO: let generics trickle through
+	from: RESOURCE[]; // TODO: let generics trickle through
 }
 
 export interface Cost {
@@ -33,12 +57,12 @@ export interface Cost {
 	unit: CoinType;
 }
 
-export interface NamedAPIResourceList<NAME extends string = string> {
+export interface NamedAPIResourceList<NAME extends string> {
 	count: number;
 	results: NamedAPIResource<NAME>[];
 }
 
-export interface ClassAPIResourceList<CLASSNAME extends string = string> {
+export interface ClassAPIResourceList {
 	count: number;
 	results: ClassAPIResource[];
 }
@@ -50,46 +74,40 @@ export interface ClassAPIResourceList<CLASSNAME extends string = string> {
 export interface AbilityScore {
 	_id: string;
 	index: number;
-	name: string;
+	name: AbilityScoreName;
 	full_name: string;
 	desc: string[];
-	skills: NamedAPIResource[];
+	skills: NamedAPIResource<SkillName>[];
 	url: string;
 }
 
 export interface Skill {
 	_id: string;
 	index: number;
-	name: string;
+	name: SkillName;
 	desc: string[];
-	ability_score: NamedAPIResource[];
+	ability_score: NamedAPIResource<AbilityScoreName>[];
 	url: string;
 }
 
 export interface Proficiency {
 	_id: string;
 	index: number;
-	type: string;
-	name: string;
-	classes: NamedAPIResource[];
-	races: [];
+	type: ProficiencyType;
+	name: ProficiencyName;
+	classes: NamedAPIResource<ClassName>[];
+	races: NamedAPIResource<RaceName>[];
 	url: string;
 }
 
 export interface Language {
 	_id: string;
 	index: number;
-	name: string;
-	type: string;
+	name: LanguageName;
+	type: LanguageType;
 	typical_speakers: RaceName[];
-	script: string;
+	script: LanguageScript;
 	url: string;
-}
-
-export interface InitialProficiencies {
-	from: NamedAPIResource[];
-	type: string;
-	choose: number;
 }
 
 export interface CharClass {
@@ -97,9 +115,9 @@ export interface CharClass {
 	index: number;
 	name: ClassName;
 	hit_die: number;
-	proficiency_choices: Choice[];
-	proficiencies: NamedAPIResource[];
-	saving_throws: NamedAPIResource[];
+	proficiency_choices: Choice<NamedAPIResource<ProficiencyName>>[];
+	proficiencies: NamedAPIResource<ProficiencyName>[];
+	saving_throws: NamedAPIResource<AbilityScoreName>[];
 	starting_equipment: ClassAPIResource;
 	class_levels: ClassAPIResource;
 	subclasses: NamedAPIResource<SubClassName>[];
@@ -114,14 +132,14 @@ export interface CharSubClass {
 	name: SubClassName;
 	subclass_flavor: string;
 	desc: string[];
-	features: string[];
+	features: NamedAPIResource<FeatureName>[];
 	url: string[];
 }
 
 export interface Feature {
 	_id: string;
 	index: number;
-	name: string;
+	name: FeatureName;
 	level: Level;
 	url: string;
 	desc: string[];
@@ -152,12 +170,21 @@ export interface ClassLevel {
 	level: number;
 	ability_score_bonuses: number;
 	prof_bonus: number;
-	feature_choices: NamedAPIResource[];
-	features: NamedAPIResource[];
+	feature_choices: NamedAPIResource<FeatureName>[];
+	features: NamedAPIResource<FeatureName>[];
 	spellcasting: LevelSpellcasting;
 	class_specific: LevelClassSpecific;
 	index: number;
 	class: ClassAPIResource;
+	url: string;
+}
+
+export interface Trait {
+	_id: string;
+	index: number;
+	races: NamedResource<RaceName>[];
+	name: TraitName;
+	desc: string[];
 	url: string;
 }
 
@@ -171,52 +198,52 @@ export interface Race {
 	age: string;
 	size: Size;
 	size_description: string;
-	starting_proficiencies: NamedAPIResource[];
-	languages: NamedAPIResource[];
+	starting_proficiencies: NamedAPIResource<ProficiencyName>[];
+	languages: NamedAPIResource<LanguageName>[];
 	language_desc: string;
-	traits: NamedAPIResource[];
-	subraces: NamedAPIResource[];
+	traits: NamedAPIResource<TraitName>[];
+	subraces: NamedAPIResource<SubRaceName>[];
 	url: string;
 }
 
 export interface SubRace {
 	_id: string;
 	index: number;
-	name: string;
+	name: SubRaceName;
 	race: NamedAPIResource<ClassName>;
 	desc: string;
 	ability_bonuses: number[];
-	starting_proficiencies: NamedAPIResource[];
-	languages: NamedAPIResource[];
-	racial_traits: NamedAPIResource[];
+	starting_proficiencies: NamedAPIResource<ProficiencyName>[];
+	languages: NamedAPIResource<LanguageName>[];
+	racial_traits: NamedAPIResource<TraitName>[];
 	url: string;
 }
 
 export interface Damage {
 	dice_count: number;
 	dice_value: DieSides;
-	damage_type: NamedAPIResource;
+	damage_type: NamedAPIResource<DamageTypeName>;
 }
 
 export interface Equipment {
-	_id: string[];
+	_id: string;
 	index: number;
-	name: string;
-	type: string;
-	subtype: string;
+	name: EquipmentName;
+	type: EquipmentType;
+	subtype: EquipmentSubType;
+	weapon_category: WeaponCategory;
 	weapon_range: WeaponRange;
-	weapon_category: string;
 	cost: Cost;
 	damage: Damage;
 	weight: number;
-	properties: string[];
+	properties: EquipmentProperty[];
 	url: string;
 }
 
 export interface Condition {
 	_id: string;
 	index: number;
-	name: string;
+	name: ConditionName;
 	desc: string[];
 	url: string;
 }
@@ -224,7 +251,7 @@ export interface Condition {
 export interface DamageType {
 	_id: string;
 	index: number;
-	name: string;
+	name: DamageTypeName;
 	desc: string[];
 	url: string;
 }
@@ -232,6 +259,6 @@ export interface DamageType {
 export interface MagicSchool {
 	_id: string;
 	index: number;
-	name: string;
+	name: MagicSchoolName;
 	url: string;
 }

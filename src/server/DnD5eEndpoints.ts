@@ -17,26 +17,36 @@ import {
 	SubRace,
 	Equipment,
 	DamageType,
-	MagicSchool
+	MagicSchool,
+	AbilityScoreName,
+	SkillName,
+	ProficiencyName,
+	LanguageName,
+	FeatureName,
+	SubRaceName,
+	EquipmentName,
+	ConditionName,
+	DamageTypeName,
+	MagicSchoolName
 } from "@typings/DnD5e";
 import { Condition } from "webpack";
 
 export default class DnD5eEndpoints {
-	public static abilityScores(): Promise<NamedAPIResourceList>;
+	public static abilityScores(): Promise<NamedAPIResourceList<AbilityScoreName>>;
 	public static abilityScores(index: number): Promise<AbilityScore>;
 	public static abilityScores(index?: number): Promise<any> {
 		return fetch(`http://www.dnd5eapi.co/api/ability-scores/${typeof index !== "undefined" ? index : ""}`)
 			.then(r => r.json());
 	}
 
-	public static skills(): Promise<NamedAPIResourceList>;
+	public static skills(): Promise<NamedAPIResourceList<SkillName>>;
 	public static skills(index: number): Promise<Skill>;
 	public static skills(index?: number): Promise<any> {
 		return fetch(`http://www.dnd5eapi.co/api/skills/${typeof index !== "undefined" ? index : ""}`)
 			.then(r => r.json());
 	}
 
-	public static proficiencies(): Promise<NamedAPIResourceList>;
+	public static proficiencies(): Promise<NamedAPIResourceList<ProficiencyName>>;
 	public static proficiencies(index: number): Promise<Proficiency>;
 	public static proficiencies(className: ClassName): Promise<Proficiency>;
 	public static proficiencies(indexer?: number | ClassName): Promise<any> {
@@ -44,7 +54,7 @@ export default class DnD5eEndpoints {
 			.then(r => r.json());
 	}
 
-	public static languages(): Promise<NamedAPIResourceList>;
+	public static languages(): Promise<NamedAPIResourceList<LanguageName>>;
 	public static languages(index: number): Promise<Language>;
 	public static languages(index?: number): Promise<any> {
 		return fetch(`http://www.dnd5eapi.co/api/languages/${typeof index !== "undefined" ? index : ""}`)
@@ -68,7 +78,7 @@ export default class DnD5eEndpoints {
 			.then(r => r.json());
 	}
 
-	public static features(): Promise<NamedAPIResourceList>;
+	public static features(): Promise<NamedAPIResourceList<FeatureName>>;
 	public static features(index: number): Promise<Feature>;
 	public static features(index?: number): Promise<any> {
 		return fetch(`http://www.dnd5eapi.co/api/features/${typeof index !== "undefined" ? index : ""}`)
@@ -87,7 +97,7 @@ export default class DnD5eEndpoints {
 			.then(r => r.json());
 	}
 
-	public static subRaces(): Promise<NamedAPIResourceList>;
+	public static subRaces(): Promise<NamedAPIResourceList<SubRaceName>>;
 	public static subRaces(index: number): Promise<SubRace>;
 	public static subRaces(race: RaceName): Promise<SubRace>;
 	public static subRaces(indexer?: any): Promise<any> {
@@ -95,28 +105,28 @@ export default class DnD5eEndpoints {
 			.then(r => r.json());
 	}
 
-	public static equipment(): Promise<NamedAPIResourceList>;
+	public static equipment(): Promise<NamedAPIResourceList<EquipmentName>>;
 	public static equipment(index: number): Promise<Equipment>;
 	public static equipment(index?: number): Promise<any> {
 		return fetch(`http://www.dnd5eapi.co/api/equipment/${typeof index !== "undefined" ? index : ""}`)
 			.then(r => r.json());
 	}
 
-	public static conditions(): Promise<NamedAPIResourceList>;
+	public static conditions(): Promise<NamedAPIResourceList<ConditionName>>;
 	public static conditions(index: number): Promise<Condition>;
 	public static conditions(index?: number): Promise<any> {
 		return fetch(`http://www.dnd5eapi.co/api/conditions/${typeof index !== "undefined" ? index : ""}`)
 			.then(r => r.json());
 	}
 
-	public static damageTypes(): Promise<NamedAPIResourceList>;
+	public static damageTypes(): Promise<NamedAPIResourceList<DamageTypeName>>;
 	public static damageTypes(index: number): Promise<DamageType>;
 	public static damageTypes(index?: number): Promise<any> {
 		return fetch(`http://www.dnd5eapi.co/api/damage-types/${typeof index !== "undefined" ? index : ""}`)
 			.then(r => r.json());
 	}
 
-	public static magicSchools(): Promise<NamedAPIResourceList>;
+	public static magicSchools(): Promise<NamedAPIResourceList<MagicSchoolName>>;
 	public static magicSchools(index: number): Promise<MagicSchool>;
 	public static magicSchools(index?: number): Promise<any> {
 		return fetch(`http://www.dnd5eapi.co/api/magic-schools/${typeof index !== "undefined" ? index : ""}`)
