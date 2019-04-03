@@ -1,8 +1,9 @@
 import * as React from "react";
 import * as Immutable from "immutable";
 import TimerData, { ImmutableTimerData } from "@typings/timer";
-import TimerPanel, { SetTimerData } from "@components/TimerPanel/TimerPanel";
 import TimerUtils from "@utils/TimerUtils";
+import { CssBaseline, Typography } from "@material-ui/core";
+import TimerPanel, { SetTimerData } from "@components/TimerPanel/TimerPanel";
 
 export interface AppProps { }
 export interface AppState {
@@ -12,7 +13,7 @@ export interface AppState {
 export default class App extends React.PureComponent<AppProps, AppState> {
 	// Recording in seconds to reduce udpates
 	private msSinceLastSecond = 0;
-	private lastTime = 0;
+	private lastTime = App.getTime();
 
 	constructor(props: AppProps) {
 		super(props);
@@ -20,37 +21,58 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		const timerData: TimerData = {
 			seconds: 0,
 			running: false,
-			increment: 30,
+			increments: {},
+			incrementOrder: [],
 			multiplier: 1,
-		}
+			daysPerYear: 365,
+			hoursPerDay: 24,
+		};
+
+		let immutableTimerData = Immutable.fromJS(timerData);
+
+		immutableTimerData = TimerUtils.addIncrement(immutableTimerData, { days: 1 });
+		immutableTimerData = TimerUtils.addIncrement(immutableTimerData, { hours: 6 });
+		immutableTimerData = TimerUtils.addIncrement(immutableTimerData, { minutes: 15 });
+		immutableTimerData = TimerUtils.addIncrement(immutableTimerData, { seconds: 30 });
 
 		this.state = {
-			timerData: Immutable.fromJS(timerData)
+			timerData: immutableTimerData,
 		};
 	}
 
-	public componentDidUpdate() {
-		if (this.timerRunning()) requestAnimationFrame(this.timerFrame);
+	public componentDidUpdate(prevProps: AppProps, prevState: AppState) {
+		const { timerData } = this.state;
+		const { timerData: prevTimerData } = prevState;
+		const running = timerData.get("running");
+		const prevRunning = prevTimerData.get("running");
+
+		if (running && !prevRunning) {
+			this.lastTime = App.getTime();
+			requestAnimationFrame(this.timerFrame);
+		}
 	}
 
 	public render(): React.ReactNode {
 		const { timerData } = this.state;
 
 		return (
-			<div className="App">
+			<Typography component="div" variant="body1">
+				<CssBaseline />
 				<TimerPanel
 					timerData={timerData}
 					setTimerData={this.setTimerData} />
-			</div>
+			</Typography>
 		);
 	}
 
-	private setTimerData: SetTimerData = (timerData) => {
+	private setTimerData: SetTimerData = timerData => {
 		this.setState({ timerData });
 	};
 
-	private timerFrame: FrameRequestCallback = (time) => {
+	private timerFrame: FrameRequestCallback = () => {
 		const { timerData } = this.state;
+		const time = App.getTime();
+
 		const dt = time - this.lastTime;
 		this.lastTime = time;
 		this.msSinceLastSecond += dt;
@@ -69,5 +91,9 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	private timerRunning(): boolean {
 		const { timerData } = this.state;
 		return timerData.get("running");
+	}
+
+	private static getTime(): number {
+		return (new Date()).getTime();
 	}
 }

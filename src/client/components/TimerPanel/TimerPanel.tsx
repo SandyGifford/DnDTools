@@ -1,16 +1,23 @@
+
 import * as React from "react";
+import styles from "./TimerPanel.style";
+
+import { WithStyles, withStyles } from "@material-ui/core";
 import { ImmutableTimerData } from "@typings/timer";
+import StringUtils from "@utils/StringUtils";
+import TimerUtils from "@utils/TimerUtils";
+import IncrementSetters from "@components/IncrementSetters/IncrementSetters";
 
 export type SetTimerData = (timerData: ImmutableTimerData) => void;
 
-export interface TimerPanelProps {
+export interface TimerPanelProps extends WithStyles<typeof styles> {
 	timerData: ImmutableTimerData;
 	setTimerData: SetTimerData;
 
 }
 export interface TimerPanelState { }
 
-export default class TimerPanel extends React.PureComponent<TimerPanelProps, TimerPanelState> {
+class TimerPanel extends React.PureComponent<TimerPanelProps, TimerPanelState> {
 	constructor(props: TimerPanelProps) {
 		super(props);
 		this.state = {};
@@ -22,8 +29,25 @@ export default class TimerPanel extends React.PureComponent<TimerPanelProps, Tim
 	}
 
 	public render(): React.ReactNode {
+		const { timerData, classes, setTimerData } = this.props;
+
+		const { years, days, hours, minutes, seconds } = TimerUtils.breakdownTimer(timerData);
+
 		return (
-			<div className="TimerPanel">{this.props.timerData.get("seconds")}</div>
+			<div className={classes.root}>
+				<div>
+					{years ? `${StringUtils.padLeft(years + "", 3, "0")} years` : null}
+					{days ? `${StringUtils.padLeft(days + "", 3, "0")} days` : null}
+					{StringUtils.padLeft(hours + "", 2, "0")}:
+					{StringUtils.padLeft(minutes + "", 2, "0")}:
+					{StringUtils.padLeft(seconds + "", 2, "0")}
+				</div>
+				<div>
+					<IncrementSetters
+						timerData={timerData}
+						setTimerData={setTimerData} />
+				</div>
+			</div>
 		)
 	}
 
@@ -35,3 +59,5 @@ export default class TimerPanel extends React.PureComponent<TimerPanelProps, Tim
 		this.props.setTimerData(this.props.timerData.set("running", running));
 	};
 }
+
+export default withStyles(styles)(TimerPanel);
