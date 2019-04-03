@@ -73,7 +73,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		const { timerData } = this.state;
 		const time = App.getTime();
 
-		const dt = time - this.lastTime;
+		const dt = (time - this.lastTime) * timerData.get("multiplier", 1);
 		this.lastTime = time;
 		this.msSinceLastSecond += dt;
 
