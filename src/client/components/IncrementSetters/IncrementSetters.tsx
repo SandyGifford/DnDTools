@@ -7,6 +7,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { ImmutableTimerData } from "@typings/timer";
 import { SetTimerData } from "@components/TimerPanel/TimerPanel";
 import IncrementSetter from "@components/IncrementSetter/IncrementSetter";
+import TimerUtils from "@utils/TimerUtils";
 
 export interface IncrementSettersProps extends WithStyles<typeof styles> {
 	timerData: ImmutableTimerData;
@@ -41,7 +42,10 @@ class IncrementSetters extends React.PureComponent<IncrementSettersProps, Increm
 										setTimerData(timerData.set("increments", newIncrements))
 									}} />
 							</div>
-							<IconButton>
+							<IconButton onClick={() => {
+								const newTimerData = TimerUtils.removeIncrement(timerData, uid);
+								setTimerData(newTimerData);
+							}}>
 								<CloseIcon fontSize="small" color="error" />
 							</IconButton>
 						</div>
