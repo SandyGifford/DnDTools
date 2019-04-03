@@ -30,7 +30,7 @@
     "socket.io-client": "latest",
     "ts-loader": "latest",
     "typescript": "latest",
-    "uuid": "^3.3.2",
+    "uuid": "latest",
     "webpack": "latest",
     "webpack-cli": "latest",
     "webpack-node-externals": "latest"
