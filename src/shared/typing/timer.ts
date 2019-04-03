@@ -11,6 +11,7 @@ export default interface TimerData {
 	seconds: number;
 	increments: Increments;
 	incrementOrder: string[];
+	selectedIncrementUid: string;
 	multiplier: number;
 	daysPerYear: number;
 	hoursPerDay: number;

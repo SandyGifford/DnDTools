@@ -23,6 +23,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 			running: false,
 			increments: {},
 			incrementOrder: [],
+			selectedIncrementUid: null,
 			multiplier: 1,
 			daysPerYear: 365,
 			hoursPerDay: 24,
@@ -34,6 +35,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		immutableTimerData = TimerUtils.addIncrement(immutableTimerData, { hours: 6 });
 		immutableTimerData = TimerUtils.addIncrement(immutableTimerData, { minutes: 15 });
 		immutableTimerData = TimerUtils.addIncrement(immutableTimerData, { seconds: 30 });
+		immutableTimerData = immutableTimerData.set("selectedIncrementUid", timerData.incrementOrder[0]);
 
 		this.state = {
 			timerData: immutableTimerData,
