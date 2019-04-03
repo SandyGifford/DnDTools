@@ -18,6 +18,7 @@
     "@types/socket.io-client": "latest",
     "@types/uuid": "^3.4.4",
     "@types/webpack": "latest",
+    "dnd5e": "https://github.com/SandyGifford/DnD5e",
     "express": "latest",
     "immutable": "latest",
     "node-fetch": "latest",

@@ -113,7 +113,7 @@
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.1.tgz#dc488842312a7f075149312905b5e3c0b054c79d"
 
-"@types/node-fetch@latest":
+"@types/node-fetch@^2.1.7", "@types/node-fetch@latest":
   version "2.1.7"
   resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.1.7.tgz#0231559340f6e3f3a0608692077d744c87b5b367"
   dependencies:
@@ -1024,6 +1024,14 @@ diffie-hellman@^5.0.0:
     bn.js "^4.1.0"
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
+
+"dnd5e@https://github.com/SandyGifford/DnD5e":
+  version "1.0.0"
+  resolved "https://github.com/SandyGifford/DnD5e#c12f367b473adf9f14ffbf559afeb464f78b9570"
+  dependencies:
+    "@types/node-fetch" "^2.1.7"
+    node-fetch "^2.3.0"
+    typescript "^3.4.1"
 
 dom-helpers@^3.2.1, dom-helpers@^3.3.1:
   version "3.4.0"
@@ -2127,7 +2135,7 @@ node-fetch@^1.0.1:
     encoding "^0.1.11"
     is-stream "^1.0.1"
 
-node-fetch@latest:
+node-fetch@^2.3.0, node-fetch@latest:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.3.0.tgz#1a1d940bbfb916a1d3e0219f037e89e71f8c5fa5"
 
@@ -3172,7 +3180,7 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@latest:
+typescript@^3.4.1, typescript@latest:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.4.1.tgz#b6691be11a881ffa9a05765a205cb7383f3b63c6"
 
