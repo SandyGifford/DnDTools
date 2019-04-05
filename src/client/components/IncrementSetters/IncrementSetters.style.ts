@@ -6,7 +6,10 @@ export type IncrementSettersClassKeys =
 	"rowSummary" |
 	"rowDetails" |
 	"timerReadout" |
-	"closeButton";
+	"closeButton" |
+	"newIncrement" |
+	"newIncrementSetter" |
+	"newIncrementAdd";
 
 const styles: StyleRulesCallback<IncrementSettersClassKeys> = theme => ({
 	root: {
@@ -25,6 +28,17 @@ const styles: StyleRulesCallback<IncrementSettersClassKeys> = theme => ({
 		padding: `0 ${theme.spacing.unit}`,
 	},
 	closeButton: {
+		flex: "0 0 auto",
+	},
+	newIncrement: {
+		marginTop: theme.spacing.unit,
+		display: "flex",
+		alignItems: "center",
+	},
+	newIncrementSetter: {
+		flex: "1 1 auto",
+	},
+	newIncrementAdd: {
 		flex: "0 0 auto",
 	},
 });

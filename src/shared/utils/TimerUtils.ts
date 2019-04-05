@@ -5,6 +5,7 @@ import UidUtils from "./UidUtils";
 export type ForEachTimerUnitCallback = (unit: TimerUnit) => void;
 export type MapTimerUnitsCallback<R> = (unit: TimerUnit) => R;
 export type ReduceTimerUnitsCallback<R> = (accumulated: R, unit: TimerUnit) => R;
+export type TimerUnitMap<T> = { [unit in TimerUnit]: T };
 
 export default class TimerUtils {
 	private static readonly SECONDS_PER_MINUTE = 60;
@@ -108,6 +109,13 @@ export default class TimerUtils {
 
 	public static mapUnits<T>(act: MapTimerUnitsCallback<T>): T[] {
 		return this.UNITS.map(unit => act(unit));
+	}
+
+	public static objectMapUnits<T>(act: MapTimerUnitsCallback<T>): TimerUnitMap<T> {
+		return this.reduceUnits((obj, unit) => {
+			obj[unit] = act(unit);
+			return obj;
+		}, {} as TimerUnitMap<T>);
 	}
 
 	public static reduceUnits<R>(act: ReduceTimerUnitsCallback<R>, initialValue: R): R {

@@ -16,7 +16,7 @@ const styles: StyleRulesCallback<IncrementSetterClassKeys> = theme => ({
 		transition: theme.transitions.create("opacity"),
 
 		"&:hover": {
-			opacity: 1.0,
+			opacity: 0.75,
 		},
 	},
 	field: {

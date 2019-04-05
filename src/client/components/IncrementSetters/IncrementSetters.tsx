@@ -1,12 +1,14 @@
 import styles from "./IncrementSetters.style";
 import * as React from "react";
+import * as Immutable from "immutable";
 
 import { WithStyles, withStyles, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography } from "@material-ui/core";
 import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import CloseIcon from "@material-ui/icons/Close";
-import { ImmutableTimerData } from "@typings/timer";
+import AddIcon from "@material-ui/icons/Add";
+import { ImmutableTimerData, ImmutableTimerBreakdown } from "@typings/timer";
 import { SetTimerData } from "@components/TimerPanel/TimerPanel";
-import IncrementSetter from "@components/IncrementSetter/IncrementSetter";
+import IncrementSetter, { SetIncrement } from "@components/IncrementSetter/IncrementSetter";
 import TimerUtils from "@utils/TimerUtils";
 import TimeReadout from "@components/TimeReadout/TimeReadout";
 
@@ -14,17 +16,24 @@ export interface IncrementSettersProps extends WithStyles<typeof styles> {
 	timerData: ImmutableTimerData;
 	setTimerData: SetTimerData;
 }
-export interface IncrementSettersState { }
+export interface IncrementSettersState {
+	newIncrement: ImmutableTimerBreakdown;
+}
 
 class IncrementSetters extends React.PureComponent<IncrementSettersProps, IncrementSettersState> {
 	constructor(props: IncrementSettersProps) {
 		super(props);
 
-		this.state = {};
+		this.state = {
+			newIncrement: Immutable.fromJS(
+				TimerUtils.objectMapUnits(() => 0),
+			),
+		};
 	}
 
 	public render(): React.ReactNode {
 		const { classes, timerData, setTimerData } = this.props;
+		const { newIncrement } = this.state;
 		const increments = timerData.get("increments");
 		const incrementOrder = timerData.get("incrementOrder");
 
@@ -59,9 +68,31 @@ class IncrementSetters extends React.PureComponent<IncrementSettersProps, Increm
 						</ExpansionPanel>
 					})
 				}
+				<div className={classes.newIncrement}>
+					<div className={classes.newIncrementSetter}>
+						<IncrementSetter
+							increment={newIncrement}
+							setIncrement={this.newIncrementChanged} />
+					</div>
+					<div className={classes.newIncrementAdd}>
+						<IconButton
+							onClick={() => {
+								const newTimerData = TimerUtils.addIncrement(timerData, newIncrement.toJS());
+								setTimerData(newTimerData);
+							}}>
+							<AddIcon fontSize="large" color="primary" />
+						</IconButton>
+					</div>
+				</div>
 			</div>
 		);
 	}
+
+	private newIncrementChanged: SetIncrement = increment => {
+		this.setState({
+			newIncrement: increment,
+		});
+	};
 }
 
 export default withStyles(styles)(IncrementSetters);
