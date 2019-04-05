@@ -51,7 +51,8 @@ class IncrementSetter extends React.PureComponent<IncrementSetterProps, Incremen
 		return <TextField
 			className={className}
 			onChange={e => {
-				setIncrement(increment.set(label, parseFloat(e.target.value)))
+				const value = Math.max(0, parseFloat(e.target.value))
+				setIncrement(increment.set(label, value))
 			}}
 			label={label}
 			type="number"
