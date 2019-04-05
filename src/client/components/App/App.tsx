@@ -1,16 +1,17 @@
+import styles from "./App.style";
 import * as React from "react";
 import * as Immutable from "immutable";
 import TimerData, { ImmutableTimerData } from "@typings/timer";
 import TimerUtils from "@utils/TimerUtils";
-import { CssBaseline, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, CssBaseline, AppBar, Toolbar } from "@material-ui/core";
 import TimerPanel, { SetTimerData } from "@components/TimerPanel/TimerPanel";
 
-export interface AppProps { }
+export interface AppProps extends WithStyles<typeof styles> { }
 export interface AppState {
 	timerData: ImmutableTimerData;
 }
 
-export default class App extends React.PureComponent<AppProps, AppState> {
+class App extends React.PureComponent<AppProps, AppState> {
 	// Recording in seconds to reduce udpates
 	private msSinceLastSecond = 0;
 	private lastTime = App.getTime();
@@ -55,15 +56,23 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	}
 
 	public render(): React.ReactNode {
+		const { classes } = this.props;
 		const { timerData } = this.state;
 
 		return (
-			<Typography component="div" variant="body1">
+			<div className={classes.root}>
 				<CssBaseline />
-				<TimerPanel
-					timerData={timerData}
-					setTimerData={this.setTimerData} />
-			</Typography>
+				<div className={classes.bar}>
+					<AppBar position="fixed" color="default">
+						<Toolbar>Hello World</Toolbar>
+					</AppBar>
+				</div>
+				<div className={classes.content}>
+					<TimerPanel
+						timerData={timerData}
+						setTimerData={this.setTimerData} />
+				</div>
+			</div>
 		);
 	}
 
@@ -99,3 +108,5 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		return (new Date()).getTime();
 	}
 }
+
+export default withStyles(styles)(App);

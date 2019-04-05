@@ -94,7 +94,7 @@
     "@types/node" "*"
     "@types/range-parser" "*"
 
-"@types/express@latest":
+"@types/express@^4.16.1", "@types/express@latest":
   version "4.16.1"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.16.1.tgz#d756bd1a85c34d87eaf44c888bad27ba8a4b7cf0"
   dependencies:
@@ -1025,13 +1025,27 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
-"dnd5e@https://github.com/SandyGifford/DnD5e":
-  version "1.0.0"
-  resolved "https://github.com/SandyGifford/DnD5e#c12f367b473adf9f14ffbf559afeb464f78b9570"
+dnd5e-client@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/dnd5e-client/-/dnd5e-client-1.0.4.tgz#cb0e88781f69386818506fa32ce26ca71864de83"
   dependencies:
+    dnd5e "^1.0.1"
+    typescript "^3.4.1"
+
+dnd5e-server@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/dnd5e-server/-/dnd5e-server-1.0.5.tgz#4cbef0df453216f48e7c74267cdb2c8b6b6e122d"
+  dependencies:
+    "@types/express" "^4.16.1"
     "@types/node-fetch" "^2.1.7"
+    dnd5e "^1.0.1"
+    express "^4.16.4"
     node-fetch "^2.3.0"
     typescript "^3.4.1"
+
+dnd5e@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/dnd5e/-/dnd5e-1.0.1.tgz#9742a900822ba8a2cdb1662acbe32cc615d1a55e"
 
 dom-helpers@^3.2.1, dom-helpers@^3.3.1:
   version "3.4.0"
@@ -1209,7 +1223,7 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-express@latest:
+express@^4.16.4, express@latest:
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.4.tgz#fddef61926109e24c515ea97fd2f1bdbf62df12e"
   dependencies:
@@ -3265,7 +3279,7 @@ utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
 
-uuid@^3.3.2:
+uuid@latest:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
 
