@@ -1,13 +1,14 @@
 import styles from "./IncrementSetters.style";
 import * as React from "react";
 
-import { WithStyles, withStyles, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography } from "@material-ui/core";
 import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import CloseIcon from "@material-ui/icons/Close";
 import { ImmutableTimerData } from "@typings/timer";
 import { SetTimerData } from "@components/TimerPanel/TimerPanel";
 import IncrementSetter from "@components/IncrementSetter/IncrementSetter";
 import TimerUtils from "@utils/TimerUtils";
+import TimeReadout from "@components/TimeReadout/TimeReadout";
 
 export interface IncrementSettersProps extends WithStyles<typeof styles> {
 	timerData: ImmutableTimerData;
@@ -32,23 +33,30 @@ class IncrementSetters extends React.PureComponent<IncrementSettersProps, Increm
 				{
 					incrementOrder.toArray().map(uid => {
 						const increment = increments.get(uid);
-						return <div key={uid} className={classes.row}>
-							<DragIndicatorIcon className={classes.rowIcon} />
-							<div className={classes.setter}>
+						return <ExpansionPanel key={uid} className={classes.row}>
+							<ExpansionPanelSummary classes={{ content: classes.rowSummary }}>
+								<DragIndicatorIcon />
+								<div className={classes.timerReadout}>
+									<Typography variant="h6"><TimeReadout breakdown={increment} /></Typography>
+								</div>
+								<div className={classes.closeButton}>
+									<IconButton onClick={() => {
+										const newTimerData = TimerUtils.removeIncrement(timerData, uid);
+										setTimerData(newTimerData);
+									}}>
+										<CloseIcon fontSize="small" color="error" />
+									</IconButton>
+								</div>
+							</ExpansionPanelSummary>
+							<ExpansionPanelDetails className={classes.rowDetails}>
 								<IncrementSetter
 									increment={increment}
 									setIncrement={newIncrement => {
 										const newIncrements = increments.set(uid, newIncrement);
 										setTimerData(timerData.set("increments", newIncrements))
 									}} />
-							</div>
-							<IconButton onClick={() => {
-								const newTimerData = TimerUtils.removeIncrement(timerData, uid);
-								setTimerData(newTimerData);
-							}}>
-								<CloseIcon fontSize="small" color="error" />
-							</IconButton>
-						</div>
+							</ExpansionPanelDetails>
+						</ExpansionPanel>
 					})
 				}
 			</div>

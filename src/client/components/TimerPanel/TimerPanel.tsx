@@ -4,8 +4,6 @@ import styles from "./TimerPanel.style";
 
 import { WithStyles, withStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography } from "@material-ui/core";
 import { ImmutableTimerData } from "@typings/timer";
-import StringUtils from "@utils/StringUtils";
-import TimerUtils from "@utils/TimerUtils";
 import IncrementSetters from "@components/IncrementSetters/IncrementSetters";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 
@@ -32,24 +30,13 @@ class TimerPanel extends React.PureComponent<TimerPanelProps, TimerPanelState> {
 	public render(): React.ReactNode {
 		const { timerData, classes, setTimerData } = this.props;
 
-		const { years, days, hours, minutes, seconds } = TimerUtils.breakdownTimer(timerData);
-
 		return (
 			<ExpansionPanel className={classes.root}>
 				<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}><Typography variant="h5">skip increments</Typography></ExpansionPanelSummary>
 				<ExpansionPanelDetails>
-					<div>
-						{years ? `${StringUtils.padLeft(years + "", 3, "0")} years` : null}
-						{days ? `${StringUtils.padLeft(days + "", 3, "0")} days` : null}
-						{StringUtils.padLeft(hours + "", 2, "0")}:
-					{StringUtils.padLeft(minutes + "", 2, "0")}:
-					{StringUtils.padLeft(seconds + "", 2, "0")}
-					</div>
-					<div>
-						<IncrementSetters
-							timerData={timerData}
-							setTimerData={setTimerData} />
-					</div>
+					<IncrementSetters
+						timerData={timerData}
+						setTimerData={setTimerData} />
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
 		)

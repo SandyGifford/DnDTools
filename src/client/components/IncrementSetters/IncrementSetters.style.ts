@@ -3,45 +3,29 @@ import { StyleRulesCallback } from "@material-ui/core";
 export type IncrementSettersClassKeys =
 	"root" |
 	"row" |
-	"setter" |
-	"rowIcon";
+	"rowSummary" |
+	"rowDetails" |
+	"timerReadout" |
+	"closeButton";
 
 const styles: StyleRulesCallback<IncrementSettersClassKeys> = theme => ({
 	root: {
 		marginTop: theme.spacing.unit * 2,
+		flex: "1 1 auto",
 	},
-	row: {
+	row: {},
+	rowSummary: {
 		display: "flex",
 		alignItems: "center",
 		paddingRight: theme.spacing.unit,
-		position: "relative",
-		paddingBottom: theme.spacing.unit * 2,
-		marginBottom: theme.spacing.unit * 2,
-
-		"&::after": {
-			content: "''",
-			position: "absolute",
-			bottom: 0,
-			left: theme.spacing.unit * 5,
-			right: theme.spacing.unit * 5,
-			borderBottom: `1px solid ${theme.palette.grey[400]}`,
-		},
-
-		"&:last-child": {
-			paddingBottom: 0,
-
-			"&::after": {
-				borderBottom: "none",
-			},
-		},
 	},
-	setter: {
+	rowDetails: {},
+	timerReadout: {
 		flex: "1 1 auto",
+		padding: `0 ${theme.spacing.unit}`,
 	},
-	rowIcon: {
+	closeButton: {
 		flex: "0 0 auto",
-		margin: theme.spacing.unit * 2,
-		cursor: "pointer",
 	},
 });
 

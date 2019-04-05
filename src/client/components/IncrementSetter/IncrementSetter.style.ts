@@ -22,7 +22,6 @@ const styles: StyleRulesCallback<IncrementSetterClassKeys> = theme => ({
 	field: {
 		flex: "1 1 auto",
 		margin: theme.spacing.unit,
-		minWidth: theme.spacing.unit * 5,
 	}
 });
 

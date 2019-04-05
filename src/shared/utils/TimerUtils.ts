@@ -1,11 +1,16 @@
 import * as Immutable from "immutable";
-import { ImmutableTimerData, TimerBreakdown } from "@typings/timer";
+import { ImmutableTimerData, TimerBreakdown, TimerUnit } from "@typings/timer";
 import UidUtils from "./UidUtils";
+
+export type ForEachTimerUnitCallback = (unit: TimerUnit) => void;
+export type MapTimerUnitsCallback<R> = (unit: TimerUnit) => R;
+export type ReduceTimerUnitsCallback<R> = (accumulated: R, unit: TimerUnit) => R;
 
 export default class TimerUtils {
 	private static readonly SECONDS_PER_MINUTE = 60;
 	private static readonly MINUTES_PER_HOUR = 60;
 	private static readonly SECONDS_PER_HOUR = TimerUtils.SECONDS_PER_MINUTE * TimerUtils.MINUTES_PER_HOUR;
+	private static readonly UNITS: TimerUnit[] = ["years", "days", "hours", "minutes", "seconds"];
 
 	public static addSeconds(timerData: ImmutableTimerData, seconds: number): ImmutableTimerData {
 		const s = timerData.get("seconds");
@@ -95,5 +100,17 @@ export default class TimerUtils {
 		return timerData
 			.set("increments", increments)
 			.set("incrementOrder", incrementOrder);
+	}
+
+	public static forEachUnit(act: ForEachTimerUnitCallback): void {
+		this.UNITS.forEach(unit => act(unit));
+	}
+
+	public static mapUnits<T>(act: MapTimerUnitsCallback<T>): T[] {
+		return this.UNITS.map(unit => act(unit));
+	}
+
+	public static reduceUnits<R>(act: ReduceTimerUnitsCallback<R>, initialValue: R): R {
+		return this.UNITS.reduce((accumulated, unit) => act(accumulated, unit), initialValue);
 	}
 }
