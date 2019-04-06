@@ -1,10 +1,11 @@
 import styles from "./App.style";
 import * as React from "react";
 import * as Immutable from "immutable";
-import TimerData, { ImmutableTimerData } from "@typings/timer";
+import TimerData, { ImmutableTimerData, SetTimerData } from "@typings/timer";
 import TimerUtils from "@utils/TimerUtils";
 import { WithStyles, withStyles, CssBaseline, AppBar, Toolbar } from "@material-ui/core";
-import TimerPanel, { SetTimerData } from "@components/TimerPanel/TimerPanel";
+import TimerPanel from "@components/TimerPanel/TimerPanel";
+import ClockReadout from "@components/ClockReadout/ClockReadout";
 
 export interface AppProps extends WithStyles<typeof styles> { }
 export interface AppState {
@@ -59,12 +60,14 @@ class App extends React.PureComponent<AppProps, AppState> {
 		const { classes } = this.props;
 		const { timerData } = this.state;
 
+		const timeBreakdown = TimerUtils.breakdownTimer(timerData);
+
 		return (
 			<div className={classes.root}>
 				<CssBaseline />
 				<div className={classes.bar}>
 					<AppBar position="fixed" color="default">
-						<Toolbar>Hello World</Toolbar>
+						<Toolbar><ClockReadout breakdown={timeBreakdown} /></Toolbar>
 					</AppBar>
 				</div>
 				<div className={classes.content}>

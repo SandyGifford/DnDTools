@@ -6,8 +6,7 @@ import { WithStyles, withStyles, IconButton, ExpansionPanel, ExpansionPanelSumma
 import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import CloseIcon from "@material-ui/icons/Close";
 import AddIcon from "@material-ui/icons/Add";
-import { ImmutableTimerData, ImmutableTimerBreakdown } from "@typings/timer";
-import { SetTimerData } from "@components/TimerPanel/TimerPanel";
+import { ImmutableTimerData, ImmutableTimerBreakdown, SetTimerData } from "@typings/timer";
 import IncrementSetter, { SetIncrement } from "@components/IncrementSetter/IncrementSetter";
 import TimerUtils from "@utils/TimerUtils";
 import TimeReadout from "@components/TimeReadout/TimeReadout";

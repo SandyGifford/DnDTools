@@ -1,11 +1,13 @@
 import * as Immutable from "immutable";
-import { ImmutableTimerData, TimerBreakdown, TimerUnit } from "@typings/timer";
+import { ImmutableTimerData, TimerBreakdown, TimerUnit, ImmutableTimerBreakdown } from "@typings/timer";
 import UidUtils from "./UidUtils";
+import { ImmutalizerObject } from "@typings/immutalizer";
 
 export type ForEachTimerUnitCallback = (unit: TimerUnit) => void;
 export type MapTimerUnitsCallback<R> = (unit: TimerUnit) => R;
 export type ReduceTimerUnitsCallback<R> = (accumulated: R, unit: TimerUnit) => R;
 export type TimerUnitMap<T> = { [unit in TimerUnit]: T };
+export type ImmutableTimerUnitMap<T> = ImmutalizerObject<{ [unit in TimerUnit]: T }>;
 
 export default class TimerUtils {
 	private static readonly SECONDS_PER_MINUTE = 60;
@@ -18,7 +20,7 @@ export default class TimerUtils {
 		return timerData.set("seconds", s + seconds);
 	}
 
-	public static breakdownTimer(timerData: ImmutableTimerData, seconds = timerData.get("seconds")): TimerBreakdown {
+	public static breakdownTimer(timerData: ImmutableTimerData, seconds = timerData.get("seconds")): ImmutableTimerBreakdown {
 		const daysPerYear = timerData.get("daysPerYear");
 		const hoursPerDay = timerData.get("hoursPerDay");
 		const secondsPerDay = this.SECONDS_PER_HOUR * hoursPerDay;
@@ -40,13 +42,13 @@ export default class TimerUtils {
 		const wholeMinutes = Math.floor(minutes);
 		seconds -= wholeMinutes * this.SECONDS_PER_MINUTE;
 
-		return {
+		return Immutable.fromJS({
 			years: wholeYears,
 			days: wholeDays,
 			hours: wholeHours,
 			minutes: wholeMinutes,
 			seconds: seconds,
-		};
+		});
 	}
 
 	public static debreak(timerData: ImmutableTimerData, breakdown: Partial<TimerBreakdown>): number {
@@ -78,7 +80,10 @@ export default class TimerUtils {
 	}
 
 	public static addIncrement(timerData: ImmutableTimerData, increment: number | Partial<TimerBreakdown>): ImmutableTimerData {
-		const breakdownIncrement = typeof increment === "number" ? this.breakdownTimer(timerData, increment) : increment;
+		const breakdownIncrement: Partial<TimerBreakdown> = typeof increment === "number" ?
+			this.breakdownTimer(timerData, increment).toJS() : // none of this is good
+			increment;
+
 		const uid = UidUtils.generate();
 		let increments = timerData.get("increments");
 		let incrementOrder = timerData.get("incrementOrder");
@@ -116,6 +121,13 @@ export default class TimerUtils {
 			obj[unit] = act(unit);
 			return obj;
 		}, {} as TimerUnitMap<T>);
+	}
+
+	public static immutableObjectMapUnits<T>(act: MapTimerUnitsCallback<T>): ImmutableTimerUnitMap<T> {
+		return this.reduceUnits((obj, unit) => {
+			obj.set(unit, act(unit) as any);
+			return obj;
+		}, Immutable.fromJS({} as TimerUnitMap<T>));
 	}
 
 	public static reduceUnits<R>(act: ReduceTimerUnitsCallback<R>, initialValue: R): R {

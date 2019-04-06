@@ -1,6 +1,9 @@
 import Immutalizer from "@typings/immutalizer";
 
 export type TimerUnit = "years" | "days" | "hours" | "minutes" | "seconds";
+export type TimerPeriod = "AM" | "PM";
+
+export type SetTimerData = (timerData: ImmutableTimerData) => void;
 
 export type TimerBreakdown = { [unit in TimerUnit]: number };
 
