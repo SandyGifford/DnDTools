@@ -101,6 +101,8 @@ export default class TimerUtils {
 		increments = increments.set(uid, Immutable.fromJS(this.completeBreakdown(breakdownIncrement)));
 		incrementOrder = incrementOrder.push(uid);
 
+		if (!timerData.get("selectedIncrementUid")) timerData = timerData.set("selectedIncrementUid", uid);
+
 		return timerData
 			.set("increments", increments)
 			.set("incrementOrder", incrementOrder);
@@ -112,6 +114,8 @@ export default class TimerUtils {
 
 		increments = increments.delete(uid);
 		incrementOrder = incrementOrder.delete(incrementOrder.indexOf(uid));
+
+		if (timerData.get("selectedIncrementUid") === uid) timerData = timerData.set("selectedIncrementUid", incrementOrder.first());
 
 		return timerData
 			.set("increments", increments)

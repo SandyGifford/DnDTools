@@ -37,6 +37,8 @@ class TimerControls extends React.PureComponent<TimerControlsProps, TimerControl
 		const selectedIncrementUid = timerData.get("selectedIncrementUid");
 		const currentIncrement = increments.get(selectedIncrementUid);
 
+		const hasIncrements = !!incrementOrder.size;
+
 		return (
 			<div className={classes.root}>
 				<Button
@@ -51,7 +53,7 @@ class TimerControls extends React.PureComponent<TimerControlsProps, TimerControl
 					}
 				</Button>
 				<Button
-					disabled={running}
+					disabled={running || !hasIncrements}
 					className={classes.button}
 					onClick={this.addIncrement}
 					variant="contained">
@@ -60,9 +62,14 @@ class TimerControls extends React.PureComponent<TimerControlsProps, TimerControl
 				<Button
 					className={`${classes.button}
 					${classes.dropdown}`}
+					disabled={!hasIncrements}
 					onClick={this.openDrop}
 					variant="contained">
-					<TimeReadout breakdown={currentIncrement} />
+					{
+						hasIncrements ?
+							<TimeReadout breakdown={currentIncrement} /> :
+							"--"
+					}
 					<ArrowDropDownIcon />
 				</Button>
 				<Menu
