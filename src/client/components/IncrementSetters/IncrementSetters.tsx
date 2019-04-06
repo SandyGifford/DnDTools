@@ -10,6 +10,7 @@ import { ImmutableTimerData, ImmutableTimerBreakdown, SetTimerData } from "@typi
 import IncrementSetter, { SetIncrement } from "@components/IncrementSetter/IncrementSetter";
 import TimerUtils from "@utils/TimerUtils";
 import TimeReadout from "@components/TimeReadout/TimeReadout";
+import DraggableList, { RowRenderer, RowMovedHandler } from "@components/DraggableList/DraggableList";
 
 export interface IncrementSettersProps extends WithStyles<typeof styles> {
 	timerData: ImmutableTimerData;
@@ -33,39 +34,16 @@ class IncrementSetters extends React.PureComponent<IncrementSettersProps, Increm
 	public render(): React.ReactNode {
 		const { classes, timerData, setTimerData } = this.props;
 		const { newIncrement } = this.state;
-		const increments = timerData.get("increments");
+
 		const incrementOrder = timerData.get("incrementOrder");
 
 		return (
 			<div className={classes.root}>
 				{
-					incrementOrder.toArray().map(uid => {
-						const increment = increments.get(uid);
-						return <ExpansionPanel key={uid} className={classes.row}>
-							<ExpansionPanelSummary classes={{ content: classes.rowSummary }}>
-								<DragIndicatorIcon />
-								<div className={classes.timerReadout}>
-									<Typography variant="h6"><TimeReadout breakdown={increment} /></Typography>
-								</div>
-								<div className={classes.closeButton}>
-									<IconButton onClick={() => {
-										const newTimerData = TimerUtils.removeIncrement(timerData, uid);
-										setTimerData(newTimerData);
-									}}>
-										<CloseIcon fontSize="small" color="error" />
-									</IconButton>
-								</div>
-							</ExpansionPanelSummary>
-							<ExpansionPanelDetails className={classes.rowDetails}>
-								<IncrementSetter
-									increment={increment}
-									setIncrement={newIncrement => {
-										const newIncrements = increments.set(uid, newIncrement);
-										setTimerData(timerData.set("increments", newIncrements))
-									}} />
-							</ExpansionPanelDetails>
-						</ExpansionPanel>
-					})
+					<DraggableList
+						rowMoved={this.rowMoved}
+						keys={incrementOrder}
+						rowRenderer={this.renderRow} />
 				}
 				<div className={classes.newIncrement}>
 					<div className={classes.newIncrementSetter}>
@@ -87,10 +65,54 @@ class IncrementSetters extends React.PureComponent<IncrementSettersProps, Increm
 		);
 	}
 
+	private renderRow: RowRenderer = (uid, r, dragged, startDrag) => {
+		const { classes, timerData, setTimerData } = this.props;
+		const increments = timerData.get("increments");
+		const increment = increments.get(uid);
+
+		return (
+			<ExpansionPanel
+				CollapseProps={{ unmountOnExit: true }}
+				expanded={dragged ? false : undefined}
+				className={classes.row}>
+				<ExpansionPanelSummary classes={{ content: classes.rowSummary }}>
+					<div className={classes.dragIndicator} onMouseDown={startDrag}>
+						<DragIndicatorIcon />
+					</div>
+					<div className={classes.timerReadout}>
+						<Typography variant="h6"><TimeReadout breakdown={increment} /></Typography>
+					</div>
+					<div className={classes.closeButton}>
+						<IconButton onClick={() => {
+							const newTimerData = TimerUtils.removeIncrement(timerData, uid);
+							setTimerData(newTimerData);
+						}}>
+							<CloseIcon fontSize="small" color="error" />
+						</IconButton>
+					</div>
+				</ExpansionPanelSummary>
+				<ExpansionPanelDetails className={classes.rowDetails}>
+					<IncrementSetter
+						increment={increment}
+						setIncrement={newIncrement => {
+							const newIncrements = increments.set(uid, newIncrement);
+							setTimerData(timerData.set("increments", newIncrements))
+						}} />
+				</ExpansionPanelDetails>
+			</ExpansionPanel>
+		);
+	};
+
 	private newIncrementChanged: SetIncrement = increment => {
 		this.setState({
 			newIncrement: increment,
 		});
+	};
+
+	private rowMoved: RowMovedHandler = (key, fromRow, toRow, newIncrementOrder) => {
+		const { timerData, setTimerData } = this.props;
+
+		setTimerData(timerData.set("incrementOrder", newIncrementOrder));
 	};
 }
 

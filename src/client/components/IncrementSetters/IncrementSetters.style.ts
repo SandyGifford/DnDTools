@@ -5,6 +5,7 @@ export type IncrementSettersClassKeys =
 	"row" |
 	"rowSummary" |
 	"rowDetails" |
+	"dragIndicator" |
 	"timerReadout" |
 	"closeButton" |
 	"newIncrement" |
@@ -23,6 +24,9 @@ const styles: StyleRulesCallback<IncrementSettersClassKeys> = theme => ({
 		paddingRight: theme.spacing.unit,
 	},
 	rowDetails: {},
+	dragIndicator: {
+		flex: "0 0 auto",
+	},
 	timerReadout: {
 		flex: "1 1 auto",
 		padding: `0 ${theme.spacing.unit}`,
