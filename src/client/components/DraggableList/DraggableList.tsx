@@ -1,7 +1,7 @@
 import styles from "./DraggableList.style";
 import * as React from "react";
 
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles, withStyles, Collapse } from "@material-ui/core";
 import { ImmutalizerList } from "@typings/immutalizer";
 import DomUtils from "@utils/DomUtils";
 import UidUtils from "@utils/UidUtils";
@@ -82,6 +82,10 @@ class DraggableList extends React.PureComponent<DraggableListProps, DraggableLis
 							height: dragHeight,
 						} : null;
 
+						const placeholderStyle: React.CSSProperties = rowDragged ? {
+							height: dragHeight,
+						} : null;
+
 						const rowTargetClassName = DomUtils.conditionalClasses({
 							[classes.dragTargetHover]: dragging && dragTargetRow === targetPosition,
 						}, targetClassName);
@@ -93,9 +97,13 @@ class DraggableList extends React.PureComponent<DraggableListProps, DraggableLis
 						this.rowRefs[key] = React.createRef();
 
 						return [
-							<div key={`row-${key}`} ref={this.rowRefs[key] as any} className={rowClassName} style={rowStyle}>
-								{rowRenderer(key, r, rowDragged, e => this.dragStart(e, key))}
-							</div>,
+							<Collapse key={`row-${key}`} in={!rowDragged}>
+								<div className={classes.rowPlaceholder} style={placeholderStyle}>
+									<div ref={this.rowRefs[key] as any} className={rowClassName} style={rowStyle}>
+										{rowRenderer(key, r, rowDragged, e => this.dragStart(e, key))}
+									</div>
+								</div>
+							</Collapse>,
 							<div
 								key={`target-${key}`}
 								style={targetStyle}

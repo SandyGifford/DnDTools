@@ -3,6 +3,7 @@ import { StyleRulesCallback } from "@material-ui/core";
 export type DraggableListClassKeys =
 	"root" |
 	"row" |
+	"rowPlaceholder" |
 	"rowDragged" |
 	"dragTarget" |
 	"dragTargetListening" |
@@ -11,6 +12,7 @@ export type DraggableListClassKeys =
 const styles: StyleRulesCallback<DraggableListClassKeys> = theme => ({
 	root: {},
 	row: {},
+	rowPlaceholder: {},
 	rowDragged: {
 		position: "fixed",
 		zIndex: 2,
