@@ -70,15 +70,20 @@ class DraggableList extends React.PureComponent<DraggableListProps, DraggableLis
 				{
 					keys.toArray().map((key, r) => {
 						const rowDragged = key === draggedKey;
+						const targetPosition = r + 1;
 
-						const style: React.CSSProperties = rowDragged ? {
+						const rowStyle: React.CSSProperties = rowDragged ? {
 							width: dragWidth,
 							height: dragHeight,
 							top: dragPosition,
 						} : null;
 
+						const targetStyle: React.CSSProperties = dragTargetRow === targetPosition ? {
+							height: dragHeight,
+						} : null;
+
 						const rowTargetClassName = DomUtils.conditionalClasses({
-							[classes.dragTargetHover]: dragging && dragTargetRow === r + 1,
+							[classes.dragTargetHover]: dragging && dragTargetRow === targetPosition,
 						}, targetClassName);
 
 						const rowClassName = DomUtils.conditionalClasses({
@@ -88,13 +93,14 @@ class DraggableList extends React.PureComponent<DraggableListProps, DraggableLis
 						this.rowRefs[key] = React.createRef();
 
 						return [
-							<div key={`row-${key}`} ref={this.rowRefs[key] as any} className={rowClassName} style={style}>
+							<div key={`row-${key}`} ref={this.rowRefs[key] as any} className={rowClassName} style={rowStyle}>
 								{rowRenderer(key, r, rowDragged, e => this.dragStart(e, key))}
 							</div>,
 							<div
 								key={`target-${key}`}
+								style={targetStyle}
 								className={rowTargetClassName}
-								onMouseEnter={this.makeTargetMouseEnterHandler(r + 1)}
+								onMouseEnter={this.makeTargetMouseEnterHandler(targetPosition)}
 								onMouseLeave={this.targetMouseLeaveHandler} />
 						];
 					})
@@ -120,6 +126,7 @@ class DraggableList extends React.PureComponent<DraggableListProps, DraggableLis
 			draggedKey: key,
 			dragPosition: rect.top,
 			dragWidth: rect.width,
+			dragHeight: rect.height,
 		});
 
 		this.addDragListeners();
