@@ -6,6 +6,7 @@ import TimerUtils from "@utils/TimerUtils";
 import { WithStyles, withStyles, CssBaseline, AppBar, Toolbar } from "@material-ui/core";
 import TimerPanel from "@components/TimerPanel/TimerPanel";
 import ClockReadout from "@components/ClockReadout/ClockReadout";
+import TimerControls from "@components/TimerControls/TimerControls";
 
 export interface AppProps extends WithStyles<typeof styles> { }
 export interface AppState {
@@ -37,7 +38,7 @@ class App extends React.PureComponent<AppProps, AppState> {
 		immutableTimerData = TimerUtils.addIncrement(immutableTimerData, { hours: 6 });
 		immutableTimerData = TimerUtils.addIncrement(immutableTimerData, { minutes: 15 });
 		immutableTimerData = TimerUtils.addIncrement(immutableTimerData, { seconds: 30 });
-		immutableTimerData = immutableTimerData.set("selectedIncrementUid", timerData.incrementOrder[0]);
+		immutableTimerData = immutableTimerData.set("selectedIncrementUid", immutableTimerData.get("incrementOrder").first());
 
 		this.state = {
 			timerData: immutableTimerData,
@@ -67,7 +68,14 @@ class App extends React.PureComponent<AppProps, AppState> {
 				<CssBaseline />
 				<div className={classes.bar}>
 					<AppBar position="fixed" color="default">
-						<Toolbar><ClockReadout breakdown={timeBreakdown} /></Toolbar>
+						<Toolbar>
+							<ClockReadout breakdown={timeBreakdown} />
+							<div className={classes.playControls}>
+								<TimerControls
+									timerData={timerData}
+									setTimerData={this.setTimerData} />
+							</div>
+						</Toolbar>
 					</AppBar>
 				</div>
 				<div className={classes.content}>

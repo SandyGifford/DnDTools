@@ -3,6 +3,7 @@ import { StyleRulesCallback } from "@material-ui/core";
 export type AppClassKeys =
 	"root" |
 	"bar" |
+	"playControls" |
 	"content";
 
 const styles: StyleRulesCallback<AppClassKeys> = theme => ({
@@ -11,6 +12,9 @@ const styles: StyleRulesCallback<AppClassKeys> = theme => ({
 	},
 	bar: {
 		...theme.mixins.toolbar,
+	},
+	playControls: {
+		marginLeft: theme.spacing.unit * 2,
 	},
 	content: {},
 });
