@@ -26,6 +26,7 @@ export interface DraggableListState {
 
 class DraggableList extends React.PureComponent<DraggableListProps, DraggableListState> {
 	private static readonly LIST_PLACEHOLDER = UidUtils.generate();
+	private wasDragging = false;
 
 	private rowRefs: { [key: string]: React.RefObject<HTMLElement> } = {};
 
@@ -46,11 +47,17 @@ class DraggableList extends React.PureComponent<DraggableListProps, DraggableLis
 		this.removeDragListeners();
 	}
 
+	public componentDidUpdate() {
+		this.wasDragging = typeof this.state.draggedKey === "string";
+	}
+
 	public render(): React.ReactNode {
 		const { classes, keys, rowRenderer } = this.props;
 		const { dragPosition, draggedKey, dragWidth, dragHeight, dragTargetRow } = this.state;
 
-		const dragging = typeof draggedKey === "string";
+		const dragging = this.isDragging();
+		const firstFrameNotDragging = this.firstFrameNotDragging();
+
 		this.rowRefs = {};
 
 		const targetClassName = DomUtils.conditionalClasses({
@@ -97,7 +104,7 @@ class DraggableList extends React.PureComponent<DraggableListProps, DraggableLis
 						this.rowRefs[key] = React.createRef();
 
 						return [
-							<Collapse key={`row-${key}`} in={!rowDragged}>
+							<Collapse key={`row-${key}`} in={!rowDragged} timeout={firstFrameNotDragging ? 0 : undefined}>
 								<div className={classes.rowPlaceholder} style={placeholderStyle}>
 									<div ref={this.rowRefs[key] as any} className={rowClassName} style={rowStyle}>
 										{rowRenderer(key, r, rowDragged, e => this.dragStart(e, key))}
@@ -115,6 +122,14 @@ class DraggableList extends React.PureComponent<DraggableListProps, DraggableLis
 				}
 			</div>
 		);
+	}
+
+	private isDragging(): boolean {
+		return typeof this.state.draggedKey === "string";
+	}
+
+	private firstFrameNotDragging(): boolean {
+		return this.wasDragging && !this.isDragging();
 	}
 
 	private makeTargetMouseEnterHandler = (row: number): React.MouseEventHandler => {
