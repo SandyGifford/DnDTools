@@ -8,6 +8,7 @@ import SkipNextIcon from "@material-ui/icons/SkipNext";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { ImmutableTimerData, SetTimerData } from "@typings/timer";
 import TimeReadout from "@components/TimeReadout/TimeReadout";
+import TimerUtils from "@utils/TimerUtils";
 
 export interface TimerControlsProps extends WithStyles<typeof styles> {
 	timerData: ImmutableTimerData;
@@ -52,6 +53,7 @@ class TimerControls extends React.PureComponent<TimerControlsProps, TimerControl
 				<Button
 					disabled={running}
 					className={classes.button}
+					onClick={this.addIncrement}
 					variant="contained">
 					<SkipNextIcon />
 				</Button>
@@ -91,6 +93,18 @@ class TimerControls extends React.PureComponent<TimerControlsProps, TimerControl
 
 		setTimerData(timerData);
 	}
+
+	private addIncrement = () => {
+		let { timerData, setTimerData } = this.props;
+
+		const increments = timerData.get("increments");
+		const selectedIncrementUid = timerData.get("selectedIncrementUid");
+		const currentIncrement = increments.get(selectedIncrementUid);
+
+		timerData = TimerUtils.addTimeToTimer(timerData, currentIncrement);
+
+		setTimerData(timerData);
+	};
 
 	private openDrop: React.MouseEventHandler<HTMLElement> = e => {
 		this.setState({ dropdownAnchor: e.currentTarget });

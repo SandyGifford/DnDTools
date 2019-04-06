@@ -51,8 +51,12 @@ export default class TimerUtils {
 		});
 	}
 
-	public static debreak(timerData: ImmutableTimerData, breakdown: Partial<TimerBreakdown>): number {
-		const { years, days, hours, minutes, seconds } = breakdown;
+	public static debreak(timerData: ImmutableTimerData, breakdown: ImmutableTimerBreakdown): number {
+		const years = breakdown.get("years");
+		const days = breakdown.get("days");
+		const hours = breakdown.get("hours");
+		const minutes = breakdown.get("minutes");
+		const seconds = breakdown.get("seconds");
 
 		const daysPerYear = timerData.get("daysPerYear");
 		const hoursPerDay = timerData.get("hoursPerDay");
@@ -77,6 +81,12 @@ export default class TimerUtils {
 			seconds: 0,
 			...breakdown,
 		};
+	}
+
+	public static addTimeToTimer(timerData: ImmutableTimerData, time: ImmutableTimerBreakdown): ImmutableTimerData {
+		const additionalSeconds = this.debreak(timerData, time);
+		const seconds = timerData.get("seconds");
+		return timerData.set("seconds", seconds + additionalSeconds);
 	}
 
 	public static addIncrement(timerData: ImmutableTimerData, increment: number | Partial<TimerBreakdown>): ImmutableTimerData {
