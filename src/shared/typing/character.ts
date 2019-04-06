@@ -1,4 +1,4 @@
-import { ClassName, RaceName, SubRaceName, Level, AbilityScoreName, SkillName, ProficiencyName, LanguageName, EquipmentName, FeatureName, TraitName } from "dnd5e";
+import { Level } from "dnd5e";
 
 export type CharacterAlignmet = "Neutral" | string; // TODO: could be narrowed
 export type CharacterBackground = "Criminal" | string; // TODO: could be narrowed
@@ -8,11 +8,11 @@ export type SkillMap<T> = { [skill in SkillName]: T };
 
 export interface Character {
 	name: string;
-	class: ClassName;
+	classIndex: number;
 	background: CharacterBackground;
 	alignment: CharacterAlignmet;
-	race: RaceName;
-	subRace: SubRaceName;
+	raceIndex: number;
+	subRaceIndex: number;
 	experiencePoints: number;
 	level: Level;
 	insperation: boolean;
@@ -26,13 +26,13 @@ export interface Character {
 	hitDice: number;
 	deathSaveFails: number;
 	deathSaveSuccesses: number;
-	proficiencies: ProficiencyName[];
-	languages: LanguageName[];
-	equipment: EquipmentName[];
+	proficiencyIndexes: number[];
+	languageIndexes: number[];
+	equipmentIndexes: number[];
 	personality: string[];
 	ideals: string[];
 	bonds: string[];
 	flaws: string[];
-	features: FeatureName[];
-	traits: TraitName[];
+	featureIndexes: number[];
+	traitIndexes: number[];
 }
