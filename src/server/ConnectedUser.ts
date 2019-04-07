@@ -1,9 +1,17 @@
+import emitTypes from "@shared/emitTypes";
+import { ImmutableGame } from "@typings/game";
+const { fromServer } = emitTypes;
+
 export default class ConnectedUser {
 	private playerIndex: number;
 	private playerName: string;
 
 	constructor(private socket: SocketIO.Socket) {
 		console.log(`${this.getPlayerDisplayText()} connected`);
+	}
+
+	public sendGameData(gameData: ImmutableGame): void {
+		this.socket.emit(fromServer.gameDataChanged, gameData);
 	}
 
 	private getPlayerNumber(): number {

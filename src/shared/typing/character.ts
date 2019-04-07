@@ -1,4 +1,4 @@
-import { Level } from "dnd5e";
+import { Level, SkillName, AbilityScoreName } from "dnd5e";
 
 export type CharacterAlignmet = "Neutral" | string; // TODO: could be narrowed
 export type CharacterBackground = "Criminal" | string; // TODO: could be narrowed

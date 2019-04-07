@@ -1,9 +1,11 @@
 import Immutalizer from "@typings/immutalizer";
+import { ImmutableGame } from "./game";
 
 export type TimerUnit = "years" | "days" | "hours" | "minutes" | "seconds";
 export type TimerPeriod = "AM" | "PM";
 
 export type SetTimerData = (timerData: ImmutableTimerData) => void;
+export type SetGameData = (gameData: ImmutableGame) => void;
 
 export type TimerBreakdown = { [unit in TimerUnit]: number };
 
