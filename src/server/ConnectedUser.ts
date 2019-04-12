@@ -24,9 +24,7 @@ export default class ConnectedUser {
 	public onDisconnect = () => {
 		console.log(`${this.getPlayerDisplayText()} disconnected`);
 
-		this.socket.off(toServer.setTimerRunning, this.setTimerRunning);
-		this.socket.off(toServer.setTimerData, this.setTimerData);
-		this.socket.off(toServer.setSeconds, this.setSeconds);
+		this.socket.removeAllListeners();
 	};
 
 	private setSeconds = (seconds: number) => {
