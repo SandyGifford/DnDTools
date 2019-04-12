@@ -53,6 +53,10 @@ class IncrementSetters extends React.PureComponent<IncrementSettersProps, Increm
 					</div>
 					<div className={classes.newIncrementAdd}>
 						<IconButton
+							disabled={!TimerUtils.debreak(timerData, newIncrement)}
+							classes={{
+								disabled: classes.addDisabled,
+							}}
 							onClick={() => {
 								const newTimerData = TimerUtils.addIncrement(timerData, newIncrement.toJS());
 								setTimerData(newTimerData);

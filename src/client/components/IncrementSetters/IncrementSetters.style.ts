@@ -10,7 +10,8 @@ export type IncrementSettersClassKeys =
 	"closeButton" |
 	"newIncrement" |
 	"newIncrementSetter" |
-	"newIncrementAdd";
+	"newIncrementAdd" |
+	"addDisabled";
 
 const styles: StyleRulesCallback<IncrementSettersClassKeys> = theme => ({
 	root: {
@@ -44,6 +45,9 @@ const styles: StyleRulesCallback<IncrementSettersClassKeys> = theme => ({
 	},
 	newIncrementAdd: {
 		flex: "0 0 auto",
+	},
+	addDisabled: {
+		opacity: 0.5,
 	},
 });
 
