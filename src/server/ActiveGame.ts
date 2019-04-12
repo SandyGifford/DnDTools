@@ -40,6 +40,12 @@ export default class ActiveGame {
 			const user = new ConnectedUser(socket, this.userSetGameData);
 			this.connectedUsers.push(user);
 			user.sendGameData(this.gameData);
+
+			socket.on("disconnect", () => {
+				const index = this.connectedUsers.indexOf(user);
+				this.connectedUsers.splice(index, 1);
+				user.onDisconnect();
+			});
 		});
 	}
 

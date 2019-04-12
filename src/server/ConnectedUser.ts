@@ -21,6 +21,14 @@ export default class ConnectedUser {
 		this.socket.emit(fromServer.gameDataChanged, gameData.toJS());
 	}
 
+	public onDisconnect = () => {
+		console.log(`${this.getPlayerDisplayText()} disconnected`);
+
+		this.socket.off(toServer.setTimerRunning, this.setTimerRunning);
+		this.socket.off(toServer.setTimerData, this.setTimerData);
+		this.socket.off(toServer.setSeconds, this.setSeconds);
+	};
+
 	private setSeconds = (seconds: number) => {
 		this.setGameData({ seconds });
 	};
