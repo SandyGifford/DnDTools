@@ -50,6 +50,7 @@ export default class SocketEndpoints {
 	};
 
 	private static gameDataChanged = (gameData: ImmutableGame): void => {
+		console.log("game changed", gameData.toJS());
 		SocketEndpoints.gameData = gameData;
 		SocketEndpoints.gameChangedDelegate.trigger(SocketEndpoints.gameData);
 	};

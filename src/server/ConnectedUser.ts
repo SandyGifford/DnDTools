@@ -11,7 +11,7 @@ export default class ConnectedUser {
 	}
 
 	public sendGameData(gameData: ImmutableGame): void {
-		this.socket.emit(fromServer.gameDataChanged, gameData);
+		this.socket.emit(fromServer.gameDataChanged, gameData.toJS());
 	}
 
 	private getPlayerNumber(): number {

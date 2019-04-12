@@ -34,10 +34,10 @@ export default class ActiveGame {
 		timerData = TimerUtils.addIncrement(timerData, { minutes: 15 });
 		timerData = TimerUtils.addIncrement(timerData, { seconds: 30 });
 
-		this.gameData.set("timerData", timerData);
+		this.gameData = this.gameData.set("timerData", timerData);
 
 		io.on("connection", socket => {
-			console.log("connection")
+			console.log("connection");
 			const user = new ConnectedUser(socket);
 			this.connectedUsers.push(user);
 			user.sendGameData(this.gameData);

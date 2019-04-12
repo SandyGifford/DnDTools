@@ -23,6 +23,8 @@ class TimerPanel extends React.PureComponent<TimerPanelProps, TimerPanelState> {
 	public render(): React.ReactNode {
 		const { timerData, classes, setTimerData } = this.props;
 
+		console.log(timerData.toJS());
+
 		return (
 			<ExpansionPanel className={classes.root} CollapseProps={{ unmountOnExit: true }} defaultExpanded={true}>
 				<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}><Typography variant="h5">skip increments</Typography></ExpansionPanelSummary>
