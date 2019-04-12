@@ -37,7 +37,6 @@ export default class ActiveGame {
 		this.gameData = this.gameData.set("timerData", timerData);
 
 		io.on("connection", socket => {
-			console.log("connection");
 			const user = new ConnectedUser(socket, this.userSetGameData);
 			this.connectedUsers.push(user);
 			user.sendGameData(this.gameData);

@@ -1,5 +1,6 @@
 import emitTypes from "@shared/emitTypes";
 import { ImmutableGame, Game } from "@typings/game";
+import TimerData from "@typings/timer";
 const { fromServer, toServer } = emitTypes;
 
 export type UserSetGameData = (gameData: Partial<Game>) => void;
@@ -12,16 +13,19 @@ export default class ConnectedUser {
 		console.log(`${this.getPlayerDisplayText()} connected`);
 
 		socket.on(toServer.setTimerRunning, this.setTimerRunning);
+		socket.on(toServer.setTimerData, this.setTimerData);
 	}
 
 	public sendGameData(gameData: ImmutableGame): void {
 		this.socket.emit(fromServer.gameDataChanged, gameData.toJS());
 	}
 
+	private setTimerData = (timerData: TimerData) => {
+		this.setGameData({ timerData, });
+	};
+
 	private setTimerRunning = (timerRunning: boolean) => {
-		this.setGameData({
-			timerRunning,
-		});
+		this.setGameData({ timerRunning, });
 	};
 
 	private getPlayerNumber(): number {
