@@ -80,7 +80,14 @@ class App extends React.PureComponent<AppProps, AppState> {
 	private setTimerRunning: SetTimerRunningHandler = timerRunning => {
 		SocketEndpoints.setTimerRunning(timerRunning);
 	};
-	private skipIncrement: SkipIncrementHandler = () => { };
+
+	private skipIncrement: SkipIncrementHandler = seconds => {
+		this.setSeconds(this.state.gameData.get("seconds") + seconds);
+	};
+
+	private setSeconds = (seconds: number) => {
+		SocketEndpoints.setSeconds(seconds);
+	};
 
 	private gameDataUpdated: GameDataChangedListener = gameData => {
 		this.setState({ gameData });

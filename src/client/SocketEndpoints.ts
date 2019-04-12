@@ -32,6 +32,10 @@ export default class SocketEndpoints {
 		SocketEndpoints.socket.emit(toServer.setTimerRunning, timerRunning);
 	};
 
+	public static setSeconds = (seconds: number): void => {
+		SocketEndpoints.socket.emit(toServer.setSeconds, seconds);
+	};
+
 	public static setTimerData = (timerData: ImmutableTimerData): void => {
 		SocketEndpoints.socket.emit(toServer.setTimerData, timerData.toJS());
 	};

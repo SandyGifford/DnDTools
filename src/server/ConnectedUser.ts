@@ -14,11 +14,16 @@ export default class ConnectedUser {
 
 		socket.on(toServer.setTimerRunning, this.setTimerRunning);
 		socket.on(toServer.setTimerData, this.setTimerData);
+		socket.on(toServer.setSeconds, this.setSeconds);
 	}
 
 	public sendGameData(gameData: ImmutableGame): void {
 		this.socket.emit(fromServer.gameDataChanged, gameData.toJS());
 	}
+
+	private setSeconds = (seconds: number) => {
+		this.setGameData({ seconds });
+	};
 
 	private setTimerData = (timerData: TimerData) => {
 		this.setGameData({ timerData, });

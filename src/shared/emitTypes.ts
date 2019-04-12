@@ -7,5 +7,6 @@ export default {
 	toServer: {
 		setTimerRunning: "set timer running",
 		setTimerData: "set timer data",
+		setSeconds: "set seconds",
 	},
 };
