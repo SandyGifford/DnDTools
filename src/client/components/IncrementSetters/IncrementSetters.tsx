@@ -39,12 +39,10 @@ class IncrementSetters extends React.PureComponent<IncrementSettersProps, Increm
 
 		return (
 			<div className={classes.root}>
-				{
-					<DraggableList
-						rowMoved={this.rowMoved}
-						keys={incrementOrder}
-						rowRenderer={this.renderRow} />
-				}
+				<DraggableList
+					rowMoved={this.rowMoved}
+					keys={incrementOrder}
+					rowRenderer={this.renderRow} />
 				<div className={classes.newIncrement}>
 					<div className={classes.newIncrementSetter}>
 						<IncrementSetter
