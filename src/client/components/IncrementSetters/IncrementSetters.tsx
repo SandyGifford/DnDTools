@@ -11,6 +11,7 @@ import IncrementSetter, { SetIncrement } from "@components/IncrementSetter/Incre
 import TimerUtils from "@utils/TimerUtils";
 import TimeReadout from "@components/TimeReadout/TimeReadout";
 import DraggableList, { RowRenderer, RowMovedHandler } from "@components/DraggableList/DraggableList";
+import ImmPureComponent from "@components/ImmPureComponent";
 
 export interface IncrementSettersProps extends WithStyles<typeof styles> {
 	timerData: ImmutableTimerData;
@@ -20,7 +21,7 @@ export interface IncrementSettersState {
 	newIncrement: ImmutableTimerBreakdown;
 }
 
-class IncrementSetters extends React.PureComponent<IncrementSettersProps, IncrementSettersState> {
+class IncrementSetters extends ImmPureComponent<IncrementSettersProps, IncrementSettersState> {
 	constructor(props: IncrementSettersProps) {
 		super(props);
 

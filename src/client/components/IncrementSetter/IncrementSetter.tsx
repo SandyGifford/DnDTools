@@ -4,6 +4,7 @@ import * as React from "react";
 import { WithStyles, withStyles, TextField } from "@material-ui/core";
 import { ImmutableTimerBreakdown, TimerUnit } from "@typings/timer";
 import DomUtils from "@utils/DomUtils";
+import ImmPureComponent from "@components/ImmPureComponent";
 
 export type SetIncrement = (increment: ImmutableTimerBreakdown) => void;
 
@@ -13,7 +14,7 @@ export interface IncrementSetterProps extends WithStyles<typeof styles> {
 }
 export interface IncrementSetterState { }
 
-class IncrementSetter extends React.PureComponent<IncrementSetterProps, IncrementSetterState> {
+class IncrementSetter extends ImmPureComponent<IncrementSetterProps, IncrementSetterState> {
 	constructor(props: IncrementSetterProps) {
 		super(props);
 

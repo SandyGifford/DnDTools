@@ -5,6 +5,7 @@ import { WithStyles, withStyles, Collapse } from "@material-ui/core";
 import { ImmutalizerList } from "@typings/immutalizer";
 import DomUtils from "@utils/DomUtils";
 import UidUtils from "@utils/UidUtils";
+import ImmPureComponent from "@components/ImmPureComponent";
 
 export type RowMovedHandler = (key: string, fromRow: number, toRow: number, suggestedNewKeys: ImmutalizerList<string[]>) => void;
 export type StartDragHandler = (d: React.MouseEvent) => void;
@@ -24,7 +25,7 @@ export interface DraggableListState {
 	dragTargetRow: number;
 }
 
-class DraggableList extends React.PureComponent<DraggableListProps, DraggableListState> {
+class DraggableList extends ImmPureComponent<DraggableListProps, DraggableListState> {
 	private static readonly LIST_PLACEHOLDER = UidUtils.generate();
 	private wasDragging = false;
 

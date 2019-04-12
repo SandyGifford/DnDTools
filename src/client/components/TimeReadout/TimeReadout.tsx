@@ -6,13 +6,14 @@ import pluralize from "pluralize";
 import { WithStyles, withStyles } from "@material-ui/core";
 import { ImmutableTimerBreakdown } from "@typings/timer";
 import TimerUtils from "@utils/TimerUtils";
+import ImmPureComponent from "@components/ImmPureComponent";
 
 export interface TimeReadoutProps extends WithStyles<typeof styles> {
 	breakdown: ImmutableTimerBreakdown;
 }
 export interface TimeReadoutState { }
 
-class TimeReadout extends React.PureComponent<TimeReadoutProps, TimeReadoutState> {
+class TimeReadout extends ImmPureComponent<TimeReadoutProps, TimeReadoutState> {
 	constructor(props: TimeReadoutProps) {
 		super(props);
 

@@ -4,13 +4,14 @@ import * as React from "react";
 import { WithStyles, withStyles } from "@material-ui/core";
 import { ImmutableTimerBreakdown, TimerPeriod } from "@typings/timer";
 import StringUtils from "@utils/StringUtils";
+import ImmPureComponent from "@components/ImmPureComponent";
 
 export interface ClockReadoutProps extends WithStyles<typeof styles> {
 	breakdown: ImmutableTimerBreakdown;
 }
 export interface ClockReadoutState { }
 
-class ClockReadout extends React.PureComponent<ClockReadoutProps, ClockReadoutState> {
+class ClockReadout extends ImmPureComponent<ClockReadoutProps, ClockReadoutState> {
 	constructor(props: ClockReadoutProps) {
 		super(props);
 

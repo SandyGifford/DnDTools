@@ -2,13 +2,14 @@ import styles from "./Loading.style";
 import * as React from "react";
 
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
+import ImmPureComponent from "@components/ImmPureComponent";
 
 export interface LoadingProps extends WithStyles<typeof styles> {
 }
 export interface LoadingState {
 }
 
-class Loading extends React.PureComponent<LoadingProps, LoadingState> {
+class Loading extends ImmPureComponent<LoadingProps, LoadingState> {
 	constructor(props: LoadingProps) {
 		super(props);
 	}

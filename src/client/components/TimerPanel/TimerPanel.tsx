@@ -6,6 +6,7 @@ import { WithStyles, withStyles, ExpansionPanel, ExpansionPanelSummary, Expansio
 import { ImmutableTimerData, SetTimerData } from "@typings/timer";
 import IncrementSetters from "@components/IncrementSetters/IncrementSetters";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import ImmPureComponent from "@components/ImmPureComponent";
 
 export interface TimerPanelProps extends WithStyles<typeof styles> {
 	timerData: ImmutableTimerData;
@@ -14,7 +15,7 @@ export interface TimerPanelProps extends WithStyles<typeof styles> {
 }
 export interface TimerPanelState { }
 
-class TimerPanel extends React.PureComponent<TimerPanelProps, TimerPanelState> {
+class TimerPanel extends ImmPureComponent<TimerPanelProps, TimerPanelState> {
 	constructor(props: TimerPanelProps) {
 		super(props);
 		this.state = {};

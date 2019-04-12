@@ -2,7 +2,7 @@ import * as React from "react";
 import * as Immutable from "immutable";
 
 
-export default abstract class ImmPureComponent<PROPS, STATE> extends React.PureComponent<PROPS, STATE> {
+export default abstract class ImmPureComponent<PROPS, STATE> extends React.Component<PROPS, STATE> {
 	public shouldComponentUpdate(prevProps: PROPS, prevState: STATE, prevContext: any): boolean {
 		return (
 			this.__objChanged(this.props, prevProps) ||

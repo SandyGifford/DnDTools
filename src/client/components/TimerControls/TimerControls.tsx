@@ -9,6 +9,7 @@ import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { ImmutableTimerData } from "@typings/timer";
 import TimeReadout from "@components/TimeReadout/TimeReadout";
 import TimerUtils from "@utils/TimerUtils";
+import ImmPureComponent from "@components/ImmPureComponent";
 
 export type SetTimerRunningHandler = (timerRunning: boolean) => void;
 export type SkipIncrementHandler = (seconds: number) => void;
@@ -25,7 +26,7 @@ export interface TimerControlsState {
 	dropdownAnchor: HTMLElement;
 }
 
-class TimerControls extends React.PureComponent<TimerControlsProps, TimerControlsState> {
+class TimerControls extends ImmPureComponent<TimerControlsProps, TimerControlsState> {
 	constructor(props: TimerControlsProps) {
 		super(props);
 

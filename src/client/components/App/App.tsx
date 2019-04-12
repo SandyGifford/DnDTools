@@ -9,13 +9,14 @@ import TimerControls, { SetTimerRunningHandler, SkipIncrementHandler } from "@co
 import Loading from "@components/Loading/Loading";
 import SocketEndpoints, { GameDataChangedListener } from "@client/SocketEndpoints";
 import { ImmutableGame } from "@typings/game";
+import ImmPureComponent from "@components/ImmPureComponent";
 
 export interface AppProps extends WithStyles<typeof styles> { }
 export interface AppState {
 	gameData: ImmutableGame;
 }
 
-class App extends React.PureComponent<AppProps, AppState> {
+class App extends ImmPureComponent<AppProps, AppState> {
 	constructor(props: AppProps) {
 		super(props);
 
