@@ -1,11 +1,11 @@
 import styles from "./App.style";
 import * as React from "react";
-import { SetTimerData, SetGameData } from "@typings/timer";
+import { SetTimerData } from "@typings/timer";
 import TimerUtils from "@utils/TimerUtils";
 import { WithStyles, withStyles, CssBaseline, AppBar, Toolbar } from "@material-ui/core";
 import TimerPanel from "@components/TimerPanel/TimerPanel";
 import ClockReadout from "@components/ClockReadout/ClockReadout";
-import TimerControls from "@components/TimerControls/TimerControls";
+import TimerControls, { TogglePlayHandler, SkipIncrementHandler } from "@components/TimerControls/TimerControls";
 import Loading from "@components/Loading/Loading";
 import SocketEndpoints, { GameDataChangedListener } from "@client/SocketEndpoints";
 import { ImmutableGame } from "@typings/game";
@@ -16,10 +16,6 @@ export interface AppState {
 }
 
 class App extends React.PureComponent<AppProps, AppState> {
-	// Recording in seconds to reduce udpates
-	private msSinceLastSecond = 0;
-	private lastTime = App.getTime();
-
 	constructor(props: AppProps) {
 		super(props);
 
@@ -51,7 +47,9 @@ class App extends React.PureComponent<AppProps, AppState> {
 		}
 
 		const timerData = gameData.get("timerData");
-		const timeBreakdown = TimerUtils.breakdownTimer(timerData);
+		const timerRunning = gameData.get("timerRunning");
+		const seconds = gameData.get("seconds");
+		const timeBreakdown = TimerUtils.breakdownTimer(timerData, seconds);
 
 		return (
 			<div className={classes.root}>
@@ -63,7 +61,9 @@ class App extends React.PureComponent<AppProps, AppState> {
 							<div className={classes.playControls}>
 								<TimerControls
 									timerData={timerData}
-									setTimerData={this.setTimerData} />
+									timerRunning={timerRunning}
+									togglePlay={this.togglePlay}
+									skipIncrement={this.skipIncrement} />
 							</div>
 						</Toolbar>
 					</AppBar>
@@ -77,45 +77,18 @@ class App extends React.PureComponent<AppProps, AppState> {
 		);
 	}
 
+	private togglePlay: TogglePlayHandler = () => {
+		SocketEndpoints.toggleTimerRunning();
+	};
+	private skipIncrement: SkipIncrementHandler = () => { };
+
 	private gameDataUpdated: GameDataChangedListener = gameData => {
-
-	};
-
-	private setTimerData: SetTimerData = timerData => {
-		this.setGameData(this.state.gameData.set("timerData", timerData));
-	};
-
-	private setGameData: SetGameData = gameData => {
 		this.setState({ gameData });
 	};
 
-	private timerFrame: FrameRequestCallback = () => {
-		const { timerData } = this.state;
-		const time = App.getTime();
-
-		const dt = (time - this.lastTime) * timerData.get("multiplier", 1);
-		this.lastTime = time;
-		this.msSinceLastSecond += dt;
-
-		if (this.msSinceLastSecond >= 1000) {
-			const wholeSeconds = Math.floor(this.msSinceLastSecond / 1000);
-			this.msSinceLastSecond = this.msSinceLastSecond % 1000;
-			this.setState({
-				timerData: TimerUtils.addSeconds(timerData, wholeSeconds),
-			});
-		}
-
-		if (this.timerRunning()) requestAnimationFrame(this.timerFrame);
+	private setTimerData: SetTimerData = timerData => {
+		SocketEndpoints.setTimerData(timerData);
 	};
-
-	private timerRunning(): boolean {
-		const { timerData } = this.state;
-		return timerData.get("running");
-	}
-
-	private static getTime(): number {
-		return (new Date()).getTime();
-	}
 }
 
 export default withStyles(styles)(App);

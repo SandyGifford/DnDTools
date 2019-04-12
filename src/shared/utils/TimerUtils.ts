@@ -2,6 +2,7 @@ import * as Immutable from "immutable";
 import { ImmutableTimerData, TimerBreakdown, TimerUnit, ImmutableTimerBreakdown } from "@typings/timer";
 import UidUtils from "./UidUtils";
 import { ImmutalizerObject } from "@typings/immutalizer";
+import { ImmutableGame } from "@typings/game";
 
 export type ForEachTimerUnitCallback = (unit: TimerUnit) => void;
 export type MapTimerUnitsCallback<R> = (unit: TimerUnit) => R;
@@ -15,12 +16,13 @@ export default class TimerUtils {
 	private static readonly SECONDS_PER_HOUR = TimerUtils.SECONDS_PER_MINUTE * TimerUtils.MINUTES_PER_HOUR;
 	private static readonly UNITS: TimerUnit[] = ["years", "days", "hours", "minutes", "seconds"];
 
-	public static addSeconds(timerData: ImmutableTimerData, seconds: number): ImmutableTimerData {
-		const s = timerData.get("seconds");
-		return timerData.set("seconds", s + seconds);
+	// TODO: this should probs be in a diff file
+	public static addSeconds(gameData: ImmutableGame, seconds: number): ImmutableGame {
+		const s = gameData.get("seconds");
+		return gameData.set("seconds", s + seconds);
 	}
 
-	public static breakdownTimer(timerData: ImmutableTimerData, seconds = timerData.get("seconds")): ImmutableTimerBreakdown {
+	public static breakdownTimer(timerData: ImmutableTimerData, seconds: number): ImmutableTimerBreakdown {
 		const daysPerYear = timerData.get("daysPerYear");
 		const hoursPerDay = timerData.get("hoursPerDay");
 		const secondsPerDay = this.SECONDS_PER_HOUR * hoursPerDay;
@@ -83,27 +85,22 @@ export default class TimerUtils {
 		};
 	}
 
-	public static addTimeToTimer(timerData: ImmutableTimerData, time: ImmutableTimerBreakdown): ImmutableTimerData {
+	public static addTime(gameData: ImmutableGame, time: ImmutableTimerBreakdown): ImmutableGame {
+		const timerData = gameData.get("timerData");
 		const additionalSeconds = this.debreak(timerData, time);
-		const seconds = timerData.get("seconds");
-		return timerData.set("seconds", seconds + additionalSeconds);
+		return this.addSeconds(gameData, additionalSeconds);
 	}
 
-	public static addIncrement(timerData: ImmutableTimerData, increment: number | Partial<TimerBreakdown>): ImmutableTimerData {
-		const breakdownIncrement: Partial<TimerBreakdown> = typeof increment === "number" ?
-			this.breakdownTimer(timerData, increment).toJS() : // none of this is good
-			increment;
-
+	public static addIncrement(timerData: ImmutableTimerData, increment: Partial<TimerBreakdown>): ImmutableTimerData {
 		const uid = UidUtils.generate();
+
 		let increments = timerData.get("increments");
 		let incrementOrder = timerData.get("incrementOrder");
 
-		increments = increments.set(uid, Immutable.fromJS(this.completeBreakdown(breakdownIncrement)));
+		increments = increments.set(uid, Immutable.fromJS(this.completeBreakdown(increment)));
 		incrementOrder = incrementOrder.push(uid);
 
-		if (!timerData.get("selectedIncrementUid")) timerData = timerData.set("selectedIncrementUid", uid);
-
-		return timerData
+		return timerData = timerData
 			.set("increments", increments)
 			.set("incrementOrder", incrementOrder);
 	}
@@ -114,8 +111,6 @@ export default class TimerUtils {
 
 		increments = increments.delete(uid);
 		incrementOrder = incrementOrder.delete(incrementOrder.indexOf(uid));
-
-		if (timerData.get("selectedIncrementUid") === uid) timerData = timerData.set("selectedIncrementUid", incrementOrder.first());
 
 		return timerData
 			.set("increments", increments)

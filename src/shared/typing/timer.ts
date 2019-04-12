@@ -12,11 +12,8 @@ export type TimerBreakdown = { [unit in TimerUnit]: number };
 export type Increments = { [uid: string]: TimerBreakdown };
 
 export default interface TimerData {
-	running: boolean;
-	seconds: number;
 	increments: Increments;
 	incrementOrder: string[];
-	selectedIncrementUid: string;
 	multiplier: number;
 	daysPerYear: number;
 	hoursPerDay: number;

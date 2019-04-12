@@ -5,7 +5,7 @@ import emitTypes from "@shared/emitTypes";
 import EventDelegate, { GenericEventListener } from "@utils/EvevntDelegate";
 import { ImmutableGame, Game } from "@typings/game";
 import TimerData, { ImmutableTimerData } from "@typings/timer";
-const { fromServer } = emitTypes;
+const { fromServer, toServer } = emitTypes;
 
 export type GameDataChangedListener = GenericEventListener<ImmutableGame>;
 
@@ -14,34 +14,45 @@ export default class SocketEndpoints {
 	private static gameChangedDelegate = new EventDelegate<ImmutableGame>();
 	private static socket = io();
 
-	public static init() {
-		console.log("connected?", this.socket.connected)
-		this.socket.on(fromServer.gameDataChanged, (newGameData: Game) => this.setGameData(Immutable.fromJS(newGameData)));
-		this.socket.on(fromServer.timerDataChanged, (timerData: TimerData) => this.setTimerData(Immutable.fromJS(timerData)));
-		this.socket.on(fromServer.timeChanged, (seconds: number) => this.setSeconds(seconds));
-	}
+	public static init = () => {
+		SocketEndpoints.socket.on(fromServer.gameDataChanged, (newGameData: Game) => SocketEndpoints.gameDataChanged(Immutable.fromJS(newGameData)));
+		SocketEndpoints.socket.on(fromServer.timerDataChanged, (timerData: TimerData) => SocketEndpoints.timerDataChanged(Immutable.fromJS(timerData)));
+		SocketEndpoints.socket.on(fromServer.secondsChanged, SocketEndpoints.secondsChanged);
+		SocketEndpoints.socket.on(fromServer.runningChanged, SocketEndpoints.timerRunningChanged);
+	};
 
-	public static addDataChangedListener(listener: GameDataChangedListener) {
-		this.gameChangedDelegate.addEventListener(listener);
-	}
+	public static addDataChangedListener = (listener: GameDataChangedListener) => {
+		SocketEndpoints.gameChangedDelegate.addEventListener(listener);
+	};
 
-	public static removeDataChangedListener(listener: GameDataChangedListener) {
-		this.gameChangedDelegate.removeEventListener(listener);
-	}
+	public static removeDataChangedListener = (listener: GameDataChangedListener) => {
+		SocketEndpoints.gameChangedDelegate.removeEventListener(listener);
+	};
 
-	private static setSeconds(seconds: number): void {
-		let timerData = this.gameData.get("timerData");
-		this.setTimerData(timerData.set("seconds", seconds));
-	}
+	public static toggleTimerRunning = () => {
+		SocketEndpoints.socket.emit(toServer.toggleRunning);
+	};
 
-	private static setTimerData(timerData: ImmutableTimerData): void {
-		this.setGameData(this.gameData.set("timerData", timerData));
-	}
+	public static setTimerData = (timerData: ImmutableTimerData): void => {
+		SocketEndpoints.socket.emit(toServer.setTimerData, timerData.toJS());
+	};
 
-	private static setGameData(gameData: ImmutableGame): void {
-		this.gameData = gameData;
-		this.gameChangedDelegate.trigger(this.gameData);
-	}
+	private static secondsChanged = (seconds: number): void => {
+		SocketEndpoints.gameDataChanged(SocketEndpoints.gameData.set("seconds", seconds));
+	};
+
+	private static timerRunningChanged = (timerRunning: boolean): void => {
+		SocketEndpoints.gameDataChanged(SocketEndpoints.gameData.set("timerRunning", timerRunning));
+	};
+
+	private static timerDataChanged = (timerData: ImmutableTimerData): void => {
+		SocketEndpoints.gameDataChanged(SocketEndpoints.gameData.set("timerData", timerData));
+	};
+
+	private static gameDataChanged = (gameData: ImmutableGame): void => {
+		SocketEndpoints.gameData = gameData;
+		SocketEndpoints.gameChangedDelegate.trigger(SocketEndpoints.gameData);
+	};
 }
 
 SocketEndpoints.init();

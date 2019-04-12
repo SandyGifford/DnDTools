@@ -6,15 +6,22 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import { ImmutableTimerData, SetTimerData } from "@typings/timer";
+import { ImmutableTimerData } from "@typings/timer";
 import TimeReadout from "@components/TimeReadout/TimeReadout";
 import TimerUtils from "@utils/TimerUtils";
 
+export type TogglePlayHandler = () => void;
+export type SkipIncrementHandler = (seconds: number) => void;
+export type SetSelectedIncrementHandler = (uid: string) => void;
+
 export interface TimerControlsProps extends WithStyles<typeof styles> {
 	timerData: ImmutableTimerData;
-	setTimerData: SetTimerData;
+	timerRunning: boolean;
+	togglePlay: TogglePlayHandler;
+	skipIncrement: SkipIncrementHandler;
 }
 export interface TimerControlsState {
+	selectedIncrementUid: string;
 	dropdownAnchor: HTMLElement;
 }
 
@@ -24,17 +31,16 @@ class TimerControls extends React.PureComponent<TimerControlsProps, TimerControl
 
 		this.state = {
 			dropdownAnchor: null,
+			selectedIncrementUid: props.timerData.get("incrementOrder").first(),
 		};
 	}
 
 	public render(): React.ReactNode {
-		const { classes, timerData } = this.props;
-		const { dropdownAnchor } = this.state;
+		const { classes, timerData, timerRunning } = this.props;
+		const { dropdownAnchor, selectedIncrementUid } = this.state;
 
-		const running = timerData.get("running");
 		const increments = timerData.get("increments");
 		const incrementOrder = timerData.get("incrementOrder");
-		const selectedIncrementUid = timerData.get("selectedIncrementUid");
 		const currentIncrement = increments.get(selectedIncrementUid);
 
 		const hasIncrements = !!incrementOrder.size;
@@ -47,15 +53,15 @@ class TimerControls extends React.PureComponent<TimerControlsProps, TimerControl
 					color="primary"
 					onClick={this.togglePlaying}>
 					{
-						running ?
+						timerRunning ?
 							<PauseIcon /> :
 							<PlayArrowIcon />
 					}
 				</Button>
 				<Button
-					disabled={running || !hasIncrements}
+					disabled={timerRunning || !hasIncrements}
 					className={classes.button}
-					onClick={this.addIncrement}
+					onClick={this.skipIncrement}
 					variant="contained">
 					<SkipNextIcon />
 				</Button>
@@ -94,23 +100,20 @@ class TimerControls extends React.PureComponent<TimerControlsProps, TimerControl
 	}
 
 	private setIncrement(uid: string): void {
-		let { timerData, setTimerData } = this.props;
-
-		timerData = timerData.set("selectedIncrementUid", uid);
-
-		setTimerData(timerData);
+		this.setState({
+			selectedIncrementUid: uid,
+		});
 	}
 
-	private addIncrement = () => {
-		let { timerData, setTimerData } = this.props;
+	private skipIncrement = () => {
+		let { timerData, skipIncrement } = this.props;
+		let { selectedIncrementUid } = this.state;
 
 		const increments = timerData.get("increments");
-		const selectedIncrementUid = timerData.get("selectedIncrementUid");
 		const currentIncrement = increments.get(selectedIncrementUid);
+		const seconds = TimerUtils.debreak(timerData, currentIncrement);
 
-		timerData = TimerUtils.addTimeToTimer(timerData, currentIncrement);
-
-		setTimerData(timerData);
+		skipIncrement(seconds);
 	};
 
 	private openDrop: React.MouseEventHandler<HTMLElement> = e => {
@@ -122,12 +125,9 @@ class TimerControls extends React.PureComponent<TimerControlsProps, TimerControl
 	};
 
 	private togglePlaying = () => {
-		let { timerData, setTimerData } = this.props;
+		let { togglePlay } = this.props;
 
-		const running = timerData.get("running");
-		timerData = timerData.set("running", !running);
-
-		setTimerData(timerData);
+		togglePlay();
 	};
 }
 
