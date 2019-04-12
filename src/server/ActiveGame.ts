@@ -1,10 +1,10 @@
 import * as Immutable from "immutable";
 import TimerUtils from "@utils/TimerUtils";
-import ConnectedUser from "./ConnectedUser";
+import ConnectedUser, { UserSetGameData } from "./ConnectedUser";
 import { Game, ImmutableGame } from "@typings/game";
 import emitTypes from "@shared/emitTypes";
 
-const { toServer, fromServer } = emitTypes;
+const { fromServer } = emitTypes;
 
 export default class ActiveGame {
 	private static readonly DEFAULT_GAME_DATA: Game = {
@@ -38,23 +38,29 @@ export default class ActiveGame {
 
 		io.on("connection", socket => {
 			console.log("connection");
-			const user = new ConnectedUser(socket);
+			const user = new ConnectedUser(socket, this.userSetGameData);
 			this.connectedUsers.push(user);
 			user.sendGameData(this.gameData);
-
-			socket.on(toServer.toggleRunning, () => {
-				const newRunning = !this.gameData.get("timerRunning");
-				console.log("toggling running, setting to", newRunning);
-				this.updateGameData(this.gameData.set("timerRunning", newRunning));
-				io.emit(fromServer.runningChanged, newRunning);
-			});
 		});
 	}
+
+	private userSetGameData: UserSetGameData = gameData => {
+		let newGameData = this.gameData;
+		const keys = Object.keys(gameData) as (keyof Game)[];
+
+		keys.forEach(key => {
+			newGameData = newGameData.set(key, Immutable.fromJS(gameData[key]) as any)
+		});
+
+		this.updateGameData(newGameData);
+	};
 
 	private updateGameData(gameData: ImmutableGame): void {
 		const newRunning = gameData.get("timerRunning");
 		const oldRunning = this.gameData.get("timerRunning");
 		this.gameData = gameData;
+
+		this.io.emit(fromServer.gameDataChanged, gameData.toJS());
 
 		if (newRunning && !oldRunning) {
 			this.lastTime = this.getTime();

@@ -5,7 +5,7 @@ import TimerUtils from "@utils/TimerUtils";
 import { WithStyles, withStyles, CssBaseline, AppBar, Toolbar } from "@material-ui/core";
 import TimerPanel from "@components/TimerPanel/TimerPanel";
 import ClockReadout from "@components/ClockReadout/ClockReadout";
-import TimerControls, { TogglePlayHandler, SkipIncrementHandler } from "@components/TimerControls/TimerControls";
+import TimerControls, { SetTimerRunningHandler, SkipIncrementHandler } from "@components/TimerControls/TimerControls";
 import Loading from "@components/Loading/Loading";
 import SocketEndpoints, { GameDataChangedListener } from "@client/SocketEndpoints";
 import { ImmutableGame } from "@typings/game";
@@ -62,7 +62,7 @@ class App extends React.PureComponent<AppProps, AppState> {
 								<TimerControls
 									timerData={timerData}
 									timerRunning={timerRunning}
-									togglePlay={this.togglePlay}
+									setTimerRunning={this.setTimerRunning}
 									skipIncrement={this.skipIncrement} />
 							</div>
 						</Toolbar>
@@ -77,8 +77,8 @@ class App extends React.PureComponent<AppProps, AppState> {
 		);
 	}
 
-	private togglePlay: TogglePlayHandler = () => {
-		SocketEndpoints.toggleTimerRunning();
+	private setTimerRunning: SetTimerRunningHandler = timerRunning => {
+		SocketEndpoints.setTimerRunning(timerRunning);
 	};
 	private skipIncrement: SkipIncrementHandler = () => { };
 

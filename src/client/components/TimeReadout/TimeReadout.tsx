@@ -22,6 +22,8 @@ class TimeReadout extends React.PureComponent<TimeReadoutProps, TimeReadoutState
 	public render(): React.ReactNode {
 		const { classes, breakdown } = this.props;
 
+		if (!breakdown) return null;
+
 		const disp = TimerUtils.reduceUnits((arr, unit) => {
 			const amount = breakdown.get(unit);
 			if (amount) arr.push(`${amount}\u00A0${pluralize(unit, amount)}`);

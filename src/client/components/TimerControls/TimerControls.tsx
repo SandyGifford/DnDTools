@@ -10,14 +10,14 @@ import { ImmutableTimerData } from "@typings/timer";
 import TimeReadout from "@components/TimeReadout/TimeReadout";
 import TimerUtils from "@utils/TimerUtils";
 
-export type TogglePlayHandler = () => void;
+export type SetTimerRunningHandler = (timerRunning: boolean) => void;
 export type SkipIncrementHandler = (seconds: number) => void;
 export type SetSelectedIncrementHandler = (uid: string) => void;
 
 export interface TimerControlsProps extends WithStyles<typeof styles> {
 	timerData: ImmutableTimerData;
 	timerRunning: boolean;
-	togglePlay: TogglePlayHandler;
+	setTimerRunning: SetTimerRunningHandler;
 	skipIncrement: SkipIncrementHandler;
 }
 export interface TimerControlsState {
@@ -125,9 +125,9 @@ class TimerControls extends React.PureComponent<TimerControlsProps, TimerControl
 	};
 
 	private togglePlaying = () => {
-		let { togglePlay } = this.props;
+		let { setTimerRunning, timerRunning } = this.props;
 
-		togglePlay();
+		setTimerRunning(!timerRunning);
 	};
 }
 

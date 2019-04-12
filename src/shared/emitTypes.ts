@@ -3,10 +3,9 @@ export default {
 		gameDataChanged: "game data changed",
 		timerDataChanged: "timer data changed",
 		secondsChanged: "time changed",
-		runningChanged: "running changed",
 	},
 	toServer: {
-		toggleRunning: "toggle running",
+		setTimerRunning: "set timer running",
 		setTimerData: "set timer data",
 	},
 };

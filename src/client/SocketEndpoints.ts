@@ -18,7 +18,6 @@ export default class SocketEndpoints {
 		SocketEndpoints.socket.on(fromServer.gameDataChanged, (newGameData: Game) => SocketEndpoints.gameDataChanged(Immutable.fromJS(newGameData)));
 		SocketEndpoints.socket.on(fromServer.timerDataChanged, (timerData: TimerData) => SocketEndpoints.timerDataChanged(Immutable.fromJS(timerData)));
 		SocketEndpoints.socket.on(fromServer.secondsChanged, SocketEndpoints.secondsChanged);
-		SocketEndpoints.socket.on(fromServer.runningChanged, SocketEndpoints.timerRunningChanged);
 	};
 
 	public static addDataChangedListener = (listener: GameDataChangedListener) => {
@@ -29,8 +28,8 @@ export default class SocketEndpoints {
 		SocketEndpoints.gameChangedDelegate.removeEventListener(listener);
 	};
 
-	public static toggleTimerRunning = () => {
-		SocketEndpoints.socket.emit(toServer.toggleRunning);
+	public static setTimerRunning = (timerRunning: boolean) => {
+		SocketEndpoints.socket.emit(toServer.setTimerRunning, timerRunning);
 	};
 
 	public static setTimerData = (timerData: ImmutableTimerData): void => {
@@ -39,10 +38,6 @@ export default class SocketEndpoints {
 
 	private static secondsChanged = (seconds: number): void => {
 		SocketEndpoints.gameDataChanged(SocketEndpoints.gameData.set("seconds", seconds));
-	};
-
-	private static timerRunningChanged = (timerRunning: boolean): void => {
-		SocketEndpoints.gameDataChanged(SocketEndpoints.gameData.set("timerRunning", timerRunning));
 	};
 
 	private static timerDataChanged = (timerData: ImmutableTimerData): void => {
