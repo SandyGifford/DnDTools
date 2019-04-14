@@ -20,7 +20,7 @@ const styles: StyleRulesCallback<TimelineClassKeys> = theme => ({
 	},
 	event: {
 		position: "absolute",
-		transition: theme.transitions.create(["left", "top"]),
+		transition: theme.transitions.create(["left", "top", "background"]),
 	},
 	eventLabel: {
 		flex: "1 1 auto",

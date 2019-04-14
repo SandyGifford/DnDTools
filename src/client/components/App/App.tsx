@@ -25,7 +25,7 @@ type AppTabs = "Timeline" | "Timer";
 
 class App extends ImmPureComponent<AppProps, AppState> {
 	private tabRenderers: { [tabName in AppTabs]: (key: string) => React.ReactNode };
-	private readonly tabs: AppTabs[] = ["Timeline", "Timer"];
+	private readonly tabs: AppTabs[] = ["Timeline", "Timer Options"];
 
 	constructor(props: AppProps) {
 		super(props);
@@ -119,16 +119,13 @@ class App extends ImmPureComponent<AppProps, AppState> {
 		return <Timeline
 			key={key}
 			events={Immutable.fromJS([
-				{ uid: "00 seconds", start: 0, duration: 10 },
-				{ uid: "10 seconds", start: 10, duration: 10 },
-				{ uid: "20 seconds", start: 20, duration: 10 },
-				{ uid: "30 seconds", start: 30, duration: 10 },
-				{ uid: "40 seconds", start: 40, duration: 10 },
-				{ uid: "50 seconds", start: 50, duration: 10 },
-				{ uid: "60 seconds", start: 60, duration: 10 },
-				{ uid: "70 seconds", start: 70, duration: 10 },
-				{ uid: "80 seconds", start: 80, duration: 10 },
-				{ uid: "90 seconds", start: 90, duration: 10 },
+				{ uid: "All Before", start: 10, duration: 20 },
+				{ uid: "Start Before", start: 40, duration: 20 },
+				{ uid: "Encompassing", start: 40, duration: 120 },
+				{ uid: "Internal", start: 60, duration: 80 },
+				{ uid: "Match", start: 50, duration: 100 },
+				{ uid: "End After", start: 140, duration: 20 },
+				{ uid: "All After", start: 170, duration: 20 },
 			])}
 			time={seconds}
 			span={100}

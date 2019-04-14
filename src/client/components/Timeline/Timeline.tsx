@@ -71,6 +71,9 @@ class Timeline extends ImmPureComponent<TimelineProps, TimelineState> {
 							this.rowEnds[rowIndex] = eventEnd;
 						}
 
+						const active = time > eventStart && time < eventEnd;
+						const past = time >= eventEnd;
+
 						return <Chip
 							key={uid}
 							className={classes.event}
@@ -83,7 +86,7 @@ class Timeline extends ImmPureComponent<TimelineProps, TimelineState> {
 								label: classes.eventLabel,
 							}}
 							label={uid}
-							color="primary"
+							color={active ? "secondary" : (past ? "default" : "primary")}
 							avatar={<Avatar><Icon /></Avatar>} />
 					})
 				}
