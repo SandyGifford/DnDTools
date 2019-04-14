@@ -11,6 +11,7 @@ export type SetIncrement = (increment: ImmutableTimerBreakdown) => void;
 export interface IncrementSetterProps extends WithStyles<typeof styles> {
 	increment: ImmutableTimerBreakdown;
 	setIncrement: SetIncrement;
+	disabled?: boolean;
 }
 export interface IncrementSetterState { }
 
@@ -42,7 +43,7 @@ class IncrementSetter extends ImmPureComponent<IncrementSetterProps, IncrementSe
 	}
 
 	private renderTextField(label: TimerUnit, value: number): React.ReactNode {
-		const { classes, setIncrement, increment } = this.props;
+		const { classes, setIncrement, increment, disabled } = this.props;
 
 		const className = DomUtils.conditionalClasses({
 			[classes.emptyField]: !value
@@ -50,6 +51,7 @@ class IncrementSetter extends ImmPureComponent<IncrementSetterProps, IncrementSe
 
 
 		return <TextField
+			disabled={disabled}
 			className={className}
 			onChange={e => {
 				const value = Math.max(0, parseFloat(e.target.value))

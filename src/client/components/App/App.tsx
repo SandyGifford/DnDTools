@@ -13,6 +13,7 @@ import { ImmutableGame } from "@typings/game";
 import ImmPureComponent from "@components/ImmPureComponent";
 import Swipable from "react-swipeable-views";
 import Timeline from "@components/Timeline/Timeline";
+import { SetTimerHandler } from "@components/SetTime/SetTime";
 
 
 export interface AppProps extends WithStyles<typeof styles> { }
@@ -21,19 +22,9 @@ export interface AppState {
 	tabIndex: number;
 }
 
-type AppTabs = "Timeline" | "Timer Options";
-
 class App extends ImmPureComponent<AppProps, AppState> {
-	private tabRenderers: { [tabName in AppTabs]: (key: string) => React.ReactNode };
-	private readonly tabs: AppTabs[] = ["Timeline", "Timer Options"];
-
 	constructor(props: AppProps) {
 		super(props);
-
-		this.tabRenderers = {
-			"Timeline": this.renderTimeline,
-			"Timer Options": this.renderTimerPanel,
-		};
 
 		this.state = {
 			gameData: null,
@@ -87,50 +78,44 @@ class App extends ImmPureComponent<AppProps, AppState> {
 				</div>
 				<div className={classes.content}>
 					<Tabs value={tabIndex} variant="fullWidth">
-						{
-							this.tabs.map((tab, index) => <Tab key={index} value={index} onClick={() => {
-								this.setState({ tabIndex: index })
-							}} label={tab} />)
-						}
+						<Tab
+							onClick={() => this.setState({ tabIndex: 0 })}
+							label="Timeline" />
+						<Tab
+							onClick={() => this.setState({ tabIndex: 1 })}
+							label="Timer Options" />
 					</Tabs>
-					<Swipable index={tabIndex}>
-						{
-							this.tabs.map((tab, index) => this.tabRenderers[tab](index + ""))
-						}
+					<Swipable index={tabIndex} className={classes.swipable}>
+						<Timeline
+							key="timeline"
+							events={Immutable.fromJS([
+								{ uid: "All Before", start: 10, duration: 20 },
+								{ uid: "Start Before", start: 40, duration: 20 },
+								{ uid: "Encompassing", start: 40, duration: 120 },
+								{ uid: "Internal", start: 60, duration: 80 },
+								{ uid: "Match", start: 50, duration: 100 },
+								{ uid: "End After", start: 140, duration: 20 },
+								{ uid: "All After", start: 170, duration: 20 },
+							])}
+							time={seconds}
+							span={100}
+							offset={-10} />
+						<TimerPanel
+							timerRunning={timerRunning}
+							key="timeroptions"
+							timerData={timerData}
+							setTimerData={this.setTimerData}
+							timeBreakdown={timeBreakdown}
+							setTime={this.setTime} />
 					</Swipable>
 				</div>
 			</div>
 		);
 	}
 
-	private renderTimerPanel = (key: string) => {
-		const { gameData } = this.state;
-		const timerData = gameData.get("timerData");
-
-		return <TimerPanel
-			key={key}
-			timerData={timerData}
-			setTimerData={this.setTimerData} />
-	}
-
-	private renderTimeline = (key: string) => {
-		const seconds = this.state.gameData.get("seconds");
-
-		return <Timeline
-			key={key}
-			events={Immutable.fromJS([
-				{ uid: "All Before", start: 10, duration: 20 },
-				{ uid: "Start Before", start: 40, duration: 20 },
-				{ uid: "Encompassing", start: 40, duration: 120 },
-				{ uid: "Internal", start: 60, duration: 80 },
-				{ uid: "Match", start: 50, duration: 100 },
-				{ uid: "End After", start: 140, duration: 20 },
-				{ uid: "All After", start: 170, duration: 20 },
-			])}
-			time={seconds}
-			span={100}
-			offset={-10} />
-	}
+	private setTime: SetTimerHandler = breakdown => {
+		SocketEndpoints.setSeconds(TimerUtils.debreak(this.state.gameData.get("timerData"), breakdown));
+	};
 
 	private setTimerRunning: SetTimerRunningHandler = timerRunning => {
 		SocketEndpoints.setTimerRunning(timerRunning);

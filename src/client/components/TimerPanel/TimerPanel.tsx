@@ -2,13 +2,24 @@
 import * as React from "react";
 import styles from "./TimerPanel.style";
 
-import { WithStyles, withStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography } from "@material-ui/core";
-import { ImmutableTimerData, SetTimerData } from "@typings/timer";
+import {
+	WithStyles,
+	withStyles,
+	ExpansionPanel,
+	ExpansionPanelSummary,
+	ExpansionPanelDetails,
+	Typography
+} from "@material-ui/core";
+import { ImmutableTimerData, SetTimerData, ImmutableTimerBreakdown } from "@typings/timer";
 import IncrementSetters from "@components/IncrementSetters/IncrementSetters";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ImmPureComponent from "@components/ImmPureComponent";
+import SetTime, { SetTimerHandler } from "@components/SetTime/SetTime";
 
 export interface TimerPanelProps extends WithStyles<typeof styles> {
+	timerRunning: boolean;
+	setTime: SetTimerHandler;
+	timeBreakdown: ImmutableTimerBreakdown;
 	timerData: ImmutableTimerData;
 	setTimerData: SetTimerData;
 
@@ -22,17 +33,28 @@ class TimerPanel extends ImmPureComponent<TimerPanelProps, TimerPanelState> {
 	}
 
 	public render(): React.ReactNode {
-		const { timerData, classes, setTimerData } = this.props;
+		const { timerData, classes, setTimerData, timeBreakdown, setTime, timerRunning } = this.props;
 
 		return (
-			<ExpansionPanel className={classes.root} CollapseProps={{ unmountOnExit: true }} defaultExpanded={true}>
-				<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}><Typography variant="h5">skip increments</Typography></ExpansionPanelSummary>
-				<ExpansionPanelDetails>
-					<IncrementSetters
-						timerData={timerData}
-						setTimerData={setTimerData} />
-				</ExpansionPanelDetails>
-			</ExpansionPanel>
+			<div className={classes.root}>
+				<ExpansionPanel CollapseProps={{ unmountOnExit: true }}>
+					<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}><Typography variant="h5">skip increments</Typography></ExpansionPanelSummary>
+					<ExpansionPanelDetails>
+						<IncrementSetters
+							timerData={timerData}
+							setTimerData={setTimerData} />
+					</ExpansionPanelDetails>
+				</ExpansionPanel>
+				<ExpansionPanel CollapseProps={{ unmountOnExit: true }}>
+					<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}><Typography variant="h5">set time</Typography></ExpansionPanelSummary>
+					<ExpansionPanelDetails>
+						<SetTime
+							timerRunning={timerRunning}
+							timeBreakdown={timeBreakdown}
+							setTime={setTime} />
+					</ExpansionPanelDetails>
+				</ExpansionPanel>
+			</div>
 		)
 	}
 }

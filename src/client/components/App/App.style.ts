@@ -2,6 +2,7 @@ import { StyleRulesCallback } from "@material-ui/core";
 
 export type AppClassKeys =
 	"root" |
+	"swipable" |
 	"bar" |
 	"playControls" |
 	"content";
@@ -9,6 +10,9 @@ export type AppClassKeys =
 const styles: StyleRulesCallback<AppClassKeys> = theme => ({
 	root: {
 		...theme.typography.body1,
+	},
+	swipable: {
+		marginTop: theme.spacing.unit
 	},
 	bar: {
 		...theme.mixins.toolbar,
