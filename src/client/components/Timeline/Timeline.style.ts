@@ -2,27 +2,31 @@ import { StyleRulesCallback } from "@material-ui/core";
 
 export type TimelineClassKeys =
 	"root" |
-	"row" |
 	"event" |
+	"cursor" |
 	"eventLabel";
 
 const styles: StyleRulesCallback<TimelineClassKeys> = theme => ({
 	root: {
 		overflow: "hidden",
-	},
-	row: {
 		position: "relative",
-		marginBottom: theme.spacing.unit,
-		height: theme.spacing.unit * 4,
+	},
+	cursor: {
+		position: "absolute",
+		top: 0,
+		left: "50%",
+		bottom: 0,
+		borderLeft: "1px solid #CCC",
 	},
 	event: {
 		position: "absolute",
-		color: "white",
-		textAlign: "left",
 		transition: theme.transitions.create(["left", "top"]),
 	},
 	eventLabel: {
 		flex: "1 1 auto",
+		textOverflow: "ellipsis",
+		overflow: "hidden",
+		display: "block",
 	},
 });
 

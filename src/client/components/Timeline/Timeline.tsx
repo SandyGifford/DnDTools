@@ -1,5 +1,6 @@
 import styles from "./Timeline.style";
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import { WithStyles, withStyles, Chip, Avatar } from "@material-ui/core";
 import Immutalizer from "@typings/immutalizer";
@@ -17,25 +18,38 @@ export type ImmutableTimelineEvent = Immutalizer<TimelineEvent>;
 
 export interface TimelineProps extends WithStyles<typeof styles> {
 	events: TimelineEventList;
-	start: number;
-	duration: number;
+	time: number;
+	span: number;
+	offset?: number;
 }
 export interface TimelineState {
 }
 
 class Timeline extends ImmPureComponent<TimelineProps, TimelineState> {
+	private static readonly ROW_HEIGHT = 40;
+	private rowEnds: number[];
+
 	constructor(props: TimelineProps) {
 		super(props);
 
-		this.state = {
-		};
+		this.state = {};
+	}
+
+	public componentDidMount() {
+		this.adjustHeight();
+	}
+
+	public componentDidUpdate() {
+		this.adjustHeight();
 	}
 
 	public render(): React.ReactNode {
-		const { classes, events, start, duration } = this.props;
+		const { classes, events, time, span, offset } = this.props;
 
-		const end = start + duration;
-		const rowEnds: number[] = [];
+		const offsetTime = time - offset;
+		const end = offsetTime + span / 2;
+		const start = offsetTime - span / 2;
+		this.rowEnds = [];
 
 		return (
 			<div className={classes.root}>
@@ -49,21 +63,21 @@ class Timeline extends ImmPureComponent<TimelineProps, TimelineState> {
 
 						const uid = event.get("uid");
 
-						let rowIndex = rowEnds.findIndex(rowEnd => rowEnd < eventStart);
+						let rowIndex = this.rowEnds.findIndex(rowEnd => rowEnd < eventStart);
 						if (rowIndex === -1) {
-							rowEnds.push(eventEnd);
-							rowIndex = rowEnds.length - 1;
+							this.rowEnds.push(eventEnd);
+							rowIndex = this.rowEnds.length - 1;
 						} else {
-							rowEnds[rowIndex] = eventEnd;
+							this.rowEnds[rowIndex] = eventEnd;
 						}
 
 						return <Chip
 							key={uid}
 							className={classes.event}
 							style={{
-								top: 40 * rowIndex,
-								width: 100 * eventDuration / duration + "%",
-								left: 100 * (eventStart - start) / duration + "%",
+								top: Timeline.ROW_HEIGHT * rowIndex,
+								width: 100 * eventDuration / span + "%",
+								left: 100 * (eventStart - start) / span + "%",
 							}}
 							classes={{
 								label: classes.eventLabel,
@@ -73,8 +87,14 @@ class Timeline extends ImmPureComponent<TimelineProps, TimelineState> {
 							avatar={<Avatar><Icon /></Avatar>} />
 					})
 				}
+				<div className={classes.cursor} style={{ left: 100 * (0.5 + offset / span) + "%" }} />
 			</div>
 		);
+	}
+
+	private adjustHeight(): void {
+		const el = ReactDOM.findDOMNode(this) as HTMLElement;
+		el.style.height = Timeline.ROW_HEIGHT * this.rowEnds.length + "px";
 	}
 }
 
