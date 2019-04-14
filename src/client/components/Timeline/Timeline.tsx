@@ -35,11 +35,12 @@ class Timeline extends ImmPureComponent<TimelineProps, TimelineState> {
 		const { classes, events, start, duration } = this.props;
 
 		const end = start + duration;
+		const rowEnds: number[] = [];
 
 		return (
 			<div className={classes.root}>
 				{
-					events.map((event, index) => {
+					events.map(event => {
 						const eventStart = event.get("start");
 						const eventDuration = event.get("duration");
 						const eventEnd = eventDuration + eventStart;
@@ -48,11 +49,19 @@ class Timeline extends ImmPureComponent<TimelineProps, TimelineState> {
 
 						const uid = event.get("uid");
 
+						let rowIndex = rowEnds.findIndex(rowEnd => rowEnd < eventStart);
+						if (rowIndex === -1) {
+							rowEnds.push(eventEnd);
+							rowIndex = rowEnds.length - 1;
+						} else {
+							rowEnds[rowIndex] = eventEnd;
+						}
+
 						return <Chip
 							key={uid}
 							className={classes.event}
 							style={{
-								top: 40 * index,
+								top: 40 * rowIndex,
 								width: 100 * eventDuration / duration + "%",
 								left: 100 * (eventStart - start) / duration + "%",
 							}}
