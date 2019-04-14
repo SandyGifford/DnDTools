@@ -21,7 +21,7 @@ export interface AppState {
 	tabIndex: number;
 }
 
-type AppTabs = "Timeline" | "Timer";
+type AppTabs = "Timeline" | "Timer Options";
 
 class App extends ImmPureComponent<AppProps, AppState> {
 	private tabRenderers: { [tabName in AppTabs]: (key: string) => React.ReactNode };
@@ -31,8 +31,8 @@ class App extends ImmPureComponent<AppProps, AppState> {
 		super(props);
 
 		this.tabRenderers = {
-			Timeline: this.renderTimeline,
-			Timer: this.renderTimerPanel,
+			"Timeline": this.renderTimeline,
+			"Timer Options": this.renderTimerPanel,
 		};
 
 		this.state = {
