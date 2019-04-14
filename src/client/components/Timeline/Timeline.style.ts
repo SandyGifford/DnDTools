@@ -10,6 +10,7 @@ const styles: StyleRulesCallback<TimelineClassKeys> = theme => ({
 	root: {
 		overflow: "hidden",
 		position: "relative",
+		transition: theme.transitions.create("height"),
 	},
 	cursor: {
 		position: "absolute",
