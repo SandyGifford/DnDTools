@@ -97,7 +97,7 @@ class Timeline extends ImmPureComponent<TimelineProps, TimelineState> {
 
 	private adjustHeight(): void {
 		const el = ReactDOM.findDOMNode(this) as HTMLElement;
-		el.style.height = Timeline.ROW_HEIGHT * this.rowEnds.length + "px";
+		el.style.height = (Timeline.ROW_HEIGHT * this.rowEnds.length - 8) + "px";
 	}
 }
 
