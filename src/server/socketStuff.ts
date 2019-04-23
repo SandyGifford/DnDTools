@@ -2,7 +2,7 @@ import { Server } from "http";
 
 import ActiveGame from "./ActiveGame";
 import ConnectedUser from "./ConnectedUser";
-import PermStorage from "./storage";
+import PermStorage from "./PermStorage";
 import defaultGame from "@shared/defaults/defaultGame";
 
 const connectedUsers: ConnectedUser[] = [];

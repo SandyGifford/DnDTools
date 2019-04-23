@@ -3,7 +3,7 @@ import TimerUtils from "@utils/TimerUtils";
 import ConnectedUser from "./ConnectedUser";
 import { Game, ImmutableGame } from "@typings/game";
 import { GameDataChangeCommHandler, GameDataUpdateDataPath } from "@typings/comm";
-import PermStorage from "./storage";
+import PermStorage from "./PermStorage";
 
 export default class ActiveGame {
 	private static readonly TICK_LENGTH = 100;

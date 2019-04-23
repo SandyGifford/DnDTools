@@ -10,6 +10,7 @@ const defaultGame: Game = {
 		daysPerYear: 365,
 		hoursPerDay: 24,
 	},
+	timelineEvents: [],
 };
 
 export default defaultGame;

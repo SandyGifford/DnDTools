@@ -3,18 +3,9 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { WithStyles, withStyles, Chip, Avatar } from "@material-ui/core";
-import Immutalizer from "@typings/immutalizer";
 import ImmPureComponent from "@components/ImmPureComponent";
-import Icon from "@material-ui/icons/PhonelinkLock"
-
-export interface TimelineEvent {
-	uid: string;
-	start: number;
-	duration?: number;
-}
-
-export type TimelineEventList = Immutalizer<TimelineEvent[]>;
-export type ImmutableTimelineEvent = Immutalizer<TimelineEvent>;
+import Icon from "@material-ui/icons/PhonelinkLock";
+import { TimelineEventList } from "@typings/game";
 
 export interface TimelineProps extends WithStyles<typeof styles> {
 	events: TimelineEventList;
