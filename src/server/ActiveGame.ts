@@ -3,6 +3,7 @@ import TimerUtils from "@utils/TimerUtils";
 import ConnectedUser from "./ConnectedUser";
 import { Game, ImmutableGame } from "@typings/game";
 import { GameDataChangeCommHandler, GameDataUpdateDataPath } from "@typings/comm";
+import PermStorage from "./storage";
 
 export default class ActiveGame {
 	private static readonly TICK_LENGTH = 100;
@@ -58,6 +59,8 @@ export default class ActiveGame {
 		this.gameData = newGameData;
 
 		this.emitToAllPlayers(data, path);
+
+		PermStorage.saveGame(this.gameData.toJS()); // don't need to save this often
 
 		if (newRunning && !oldRunning) {
 			this.lastTime = this.getTime();
