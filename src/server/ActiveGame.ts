@@ -1,32 +1,20 @@
 import * as Immutable from "immutable";
 import TimerUtils from "@utils/TimerUtils";
-import ConnectedUser, { UserSetGameData } from "./ConnectedUser";
+import ConnectedUser from "./ConnectedUser";
 import { Game, ImmutableGame } from "@typings/game";
-import emitTypes from "@shared/emitTypes";
-
-const { fromServer } = emitTypes;
+import { GameDataChangeCommHandler, GameDataUpdateDataPath } from "@typings/comm";
 
 export default class ActiveGame {
-	private static readonly DEFAULT_GAME_DATA: Game = {
-		seconds: 0,
-		timerRunning: false,
-		timerData: {
-			increments: {},
-			incrementOrder: [],
-			multiplier: 1,
-			daysPerYear: 365,
-			hoursPerDay: 24,
-		},
-	};
-
 	private static readonly TICK_LENGTH = 100;
-	private readonly connectedUsers: ConnectedUser[] = [];
-	private gameData: ImmutableGame = Immutable.fromJS(ActiveGame.DEFAULT_GAME_DATA);
+	private connectedUsers: ConnectedUser[] = [];
+	private gameData: ImmutableGame;
 	private msSinceLastSecond = 0;
 	private lastTime = this.getTime();
 
-	constructor(private io: SocketIO.Server) {
+	constructor(gameData: Game) {
 		console.log(`game started`);
+
+		this.gameData = Immutable.fromJS(gameData)
 
 		let timerData = this.gameData.get("timerData");
 		timerData = TimerUtils.addIncrement(timerData, { days: 1 });
@@ -35,42 +23,50 @@ export default class ActiveGame {
 		timerData = TimerUtils.addIncrement(timerData, { seconds: 30 });
 
 		this.gameData = this.gameData.set("timerData", timerData);
-
-		io.on("connection", socket => {
-			const user = new ConnectedUser(socket, this.userSetGameData);
-			this.connectedUsers.push(user);
-			user.sendGameData(this.gameData);
-
-			socket.on("disconnect", () => {
-				const index = this.connectedUsers.indexOf(user);
-				this.connectedUsers.splice(index, 1);
-				user.onDisconnect();
-			});
-		});
 	}
 
-	private userSetGameData: UserSetGameData = gameData => {
+	public addUser(user: ConnectedUser): void {
+		const index = this.connectedUsers.indexOf(user);
+		if (index === -1) {
+			this.connectedUsers.push(user);
+			user.setActiveGame(this);
+			user.emitGameData(this.gameData);
+		}
+		else console.log("user is already connected");
+	}
+
+	public removeUser(user: ConnectedUser): void {
+		const index = this.connectedUsers.indexOf(user);
+		if (index !== -1) {
+			const user = this.connectedUsers[index];
+			user.clearActiveGame();
+			this.connectedUsers.splice(index, 1);
+		} else console.log("user isn't connected");
+	}
+
+	public userSetGameData: GameDataChangeCommHandler = (data, path = "root") => {
 		let newGameData = this.gameData;
-		const keys = Object.keys(gameData) as (keyof Game)[];
+		data = Immutable.fromJS(data);
 
-		keys.forEach(key => {
-			newGameData = newGameData.set(key, Immutable.fromJS(gameData[key]) as any)
-		});
+		if (path === "root")
+			newGameData = data;
+		else
+			newGameData = newGameData.setIn(path, data);
 
-		this.updateGameData(newGameData);
-	};
-
-	private updateGameData(gameData: ImmutableGame): void {
-		const newRunning = gameData.get("timerRunning");
+		const newRunning = newGameData.get("timerRunning");
 		const oldRunning = this.gameData.get("timerRunning");
-		this.gameData = gameData;
+		this.gameData = newGameData;
 
-		this.io.emit(fromServer.gameDataChanged, gameData.toJS());
+		this.emitToAllPlayers(data, path);
 
 		if (newRunning && !oldRunning) {
 			this.lastTime = this.getTime();
 			setTimeout(this.timerFrame, ActiveGame.TICK_LENGTH);
 		}
+	};
+
+	private emitToAllPlayers(data: any, path?: GameDataUpdateDataPath): void {
+		this.connectedUsers.forEach(user => user.emitGameData(data, path));
 	}
 
 	private timerFrame: FrameRequestCallback = () => {
@@ -87,7 +83,7 @@ export default class ActiveGame {
 
 			this.gameData = TimerUtils.addSeconds(this.gameData, wholeSeconds);
 
-			this.io.emit(fromServer.secondsChanged, this.gameData.get("seconds"));
+			this.userSetGameData(this.gameData.get("seconds"), ["seconds"]);
 		}
 
 		if (this.gameData.get("timerRunning")) setTimeout(this.timerFrame, ActiveGame.TICK_LENGTH);

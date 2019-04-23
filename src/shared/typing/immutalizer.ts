@@ -14,6 +14,8 @@ export type ImmutablePrimitiveSwitchValue<VALUE_TYPE> = VALUE_TYPE extends Immut
 type Immutalizer<T> = T extends any[] ? ImmutalizerList<T> : ImmutalizerObject<T>;
 export default Immutalizer;
 
+export type ImmutalizerKeyPath<MUTABLE_TYPE> = [(keyof MUTABLE_TYPE), ...any[]];
+
 export interface ImmutalizerObject<
 	MUTABLE_TYPE,
 	> extends Immutable.Map<keyof MUTABLE_TYPE, ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[keyof MUTABLE_TYPE]>> {
@@ -23,7 +25,7 @@ export interface ImmutalizerObject<
 	get<PROP_NAME extends (keyof MUTABLE_TYPE)>(prop: PROP_NAME, notSetValue?: ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME>): ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME>;
 	set<PROP_NAME extends (keyof MUTABLE_TYPE)>(prop: PROP_NAME, value: ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME>): this;
 
-	setIn(keyPath: [(keyof MUTABLE_TYPE), ...any[]], value: any): this;
+	setIn(keyPath: ImmutalizerKeyPath<MUTABLE_TYPE>, value: any): this;
 	setIn(keyPath: Immutable.List<any>, value: any): this;
 
 	toJS(): MUTABLE_TYPE;

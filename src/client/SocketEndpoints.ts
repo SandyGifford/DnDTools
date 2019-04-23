@@ -1,11 +1,12 @@
 import * as Immutable from "immutable";
 import io from "socket.io-client";
 
-import emitTypes from "@shared/emitTypes";
 import EventDelegate, { GenericEventListener } from "@utils/EvevntDelegate";
-import { ImmutableGame, Game } from "@typings/game";
-import TimerData, { ImmutableTimerData } from "@typings/timer";
-const { fromServer, toServer } = emitTypes;
+import { ImmutableGame } from "@typings/game";
+import { ImmutableTimerData } from "@typings/timer";
+import gameDataUpdatedEmitType from "@shared/const/comm";
+import GameUpdateData, { GameDataUpdateDataPath } from "@typings/comm";
+import CommUtils from "@utils/CommUtils";
 
 export type GameDataChangedListener = GenericEventListener<ImmutableGame>;
 
@@ -15,9 +16,7 @@ export default class SocketEndpoints {
 	private static socket = io();
 
 	public static init = () => {
-		SocketEndpoints.socket.on(fromServer.gameDataChanged, (newGameData: Game) => SocketEndpoints.gameDataChanged(Immutable.fromJS(newGameData)));
-		SocketEndpoints.socket.on(fromServer.timerDataChanged, (timerData: TimerData) => SocketEndpoints.timerDataChanged(Immutable.fromJS(timerData)));
-		SocketEndpoints.socket.on(fromServer.secondsChanged, SocketEndpoints.secondsChanged);
+		SocketEndpoints.socket.on(gameDataUpdatedEmitType, SocketEndpoints.gameDataChanged);
 	};
 
 	public static addDataChangedListener = (listener: GameDataChangedListener) => {
@@ -29,27 +28,29 @@ export default class SocketEndpoints {
 	};
 
 	public static setTimerRunning = (timerRunning: boolean) => {
-		SocketEndpoints.socket.emit(toServer.setTimerRunning, timerRunning);
+		SocketEndpoints.changeGameData(timerRunning, ["timerRunning"]);
 	};
 
 	public static setSeconds = (seconds: number): void => {
-		SocketEndpoints.socket.emit(toServer.setSeconds, seconds);
+		SocketEndpoints.changeGameData(seconds, ["seconds"]);
 	};
 
 	public static setTimerData = (timerData: ImmutableTimerData): void => {
-		SocketEndpoints.socket.emit(toServer.setTimerData, timerData.toJS());
+		SocketEndpoints.changeGameData(timerData.toJS(), ["timerData"]);
 	};
 
-	private static secondsChanged = (seconds: number): void => {
-		SocketEndpoints.gameDataChanged(SocketEndpoints.gameData.set("seconds", seconds));
+	private static changeGameData = (gameData: any, path?: GameDataUpdateDataPath): void => {
+		SocketEndpoints.socket.emit(gameDataUpdatedEmitType, CommUtils.makeGameUpdateData(gameData, path));
 	};
 
-	private static timerDataChanged = (timerData: ImmutableTimerData): void => {
-		SocketEndpoints.gameDataChanged(SocketEndpoints.gameData.set("timerData", timerData));
-	};
+	private static gameDataChanged = (commData: GameUpdateData): void => {
+		const data = Immutable.fromJS(commData.data);
 
-	private static gameDataChanged = (gameData: ImmutableGame): void => {
-		SocketEndpoints.gameData = gameData;
+		if (commData.path === "root")
+			SocketEndpoints.gameData = data as ImmutableGame;
+		else
+			SocketEndpoints.gameData = SocketEndpoints.gameData.setIn(commData.path, data);
+
 		SocketEndpoints.gameChangedDelegate.trigger(SocketEndpoints.gameData);
 	};
 }

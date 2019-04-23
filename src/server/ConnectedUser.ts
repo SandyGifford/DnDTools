@@ -1,24 +1,17 @@
-import emitTypes from "@shared/emitTypes";
-import { ImmutableGame, Game } from "@typings/game";
-import TimerData from "@typings/timer";
-const { fromServer, toServer } = emitTypes;
-
-export type UserSetGameData = (gameData: Partial<Game>) => void;
+import ActiveGame from "./ActiveGame";
+import gameDataUpdatedEmitType from "@shared/const/comm";
+import GameUpdateData, { GameDataUpdateDataPath } from "@typings/comm";
+import CommUtils from "@utils/CommUtils";
 
 export default class ConnectedUser {
 	private playerIndex: number;
 	private playerName: string;
+	private activeGame: ActiveGame;
 
-	constructor(private socket: SocketIO.Socket, private setGameData: UserSetGameData) {
+	constructor(private socket: SocketIO.Socket) {
 		console.log(`${this.getPlayerDisplayText()} connected`);
 
-		socket.on(toServer.setTimerRunning, this.setTimerRunning);
-		socket.on(toServer.setTimerData, this.setTimerData);
-		socket.on(toServer.setSeconds, this.setSeconds);
-	}
-
-	public sendGameData(gameData: ImmutableGame): void {
-		this.socket.emit(fromServer.gameDataChanged, gameData.toJS());
+		socket.on(gameDataUpdatedEmitType, this.userChangeDataRequest);
 	}
 
 	public onDisconnect = () => {
@@ -27,16 +20,20 @@ export default class ConnectedUser {
 		this.socket.removeAllListeners();
 	};
 
-	private setSeconds = (seconds: number) => {
-		this.setGameData({ seconds });
-	};
+	public setActiveGame(activeGame: ActiveGame): void {
+		this.activeGame = activeGame;
+	}
 
-	private setTimerData = (timerData: TimerData) => {
-		this.setGameData({ timerData, });
-	};
+	public clearActiveGame(): void {
+		this.activeGame = null;
+	}
 
-	private setTimerRunning = (timerRunning: boolean) => {
-		this.setGameData({ timerRunning, });
+	public emitGameData(data: any, path?: GameDataUpdateDataPath): void {
+		this.socket.emit(gameDataUpdatedEmitType, CommUtils.makeGameUpdateData(data, path));
+	}
+
+	private userChangeDataRequest = (data: GameUpdateData) => {
+		if (this.activeGame) this.activeGame.userSetGameData(data.data, data.path);
 	};
 
 	private getPlayerNumber(): number {
