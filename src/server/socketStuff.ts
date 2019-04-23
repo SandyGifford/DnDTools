@@ -29,7 +29,12 @@ export default (server: Server) => {
 
 		socket.on("disconnect", () => {
 			const index = connectedUsers.indexOf(user);
-			if (activeGame) activeGame.removeUser(user);
+
+			if (activeGame) {
+				activeGame.removeUser(user);
+				activeGame.saveGame();
+			}
+
 			connectedUsers.splice(index, 1);
 			user.onDisconnect();
 		});

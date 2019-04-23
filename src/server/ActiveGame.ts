@@ -45,6 +45,10 @@ export default class ActiveGame {
 		} else console.log("user isn't connected");
 	}
 
+	public saveGame(): Promise<void> {
+		return PermStorage.saveGame(this.gameData.toJS());
+	}
+
 	public userSetGameData: GameDataChangeCommHandler = (data, path = "root") => {
 		let newGameData = this.gameData;
 		data = Immutable.fromJS(data);
@@ -59,8 +63,6 @@ export default class ActiveGame {
 		this.gameData = newGameData;
 
 		this.emitToAllPlayers(data, path);
-
-		PermStorage.saveGame(this.gameData.toJS()); // don't need to save this often
 
 		if (newRunning && !oldRunning) {
 			this.lastTime = this.getTime();
